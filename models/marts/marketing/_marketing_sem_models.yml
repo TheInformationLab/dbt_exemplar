@@ -95,7 +95,7 @@ saved_queries:
         - average_order_value
       group_by:
         - Entity('customer')
-        - Dimension('customers__customer_name')
+        - Dimension('customer__customer_name')
     exports:
       - name: customer_order_metrics
         config:
