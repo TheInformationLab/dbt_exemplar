@@ -1,6 +1,6 @@
 config-version: 2
 
-name: "jaffle_shop"
+name: "dbt_exemplar"
 version: "3.0.0"
 require-dbt-version: ">=1.5.0"
 
@@ -25,10 +25,11 @@ vars:
 seeds:
 
 models:
-  jaffle_shop:
-    staging:
-      +materialized: view
-    marts:
-      +materialized: table
+  dbt_exemplar:
+    jaffle-shop:
+      staging:
+        +materialized: view
+      marts:
+        +materialized: table
 flags:
   require_generic_test_arguments_property: true
