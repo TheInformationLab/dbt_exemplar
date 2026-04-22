@@ -26,9 +26,10 @@ seeds:
 
 models:
   jaffle_shop:
-    staging:
-      +materialized: view
-    marts:
-      +materialized: table
+    jaffle-shop:
+      staging:
+        +materialized: view
+      marts:
+        +materialized: table
 flags:
   require_generic_test_arguments_property: true
