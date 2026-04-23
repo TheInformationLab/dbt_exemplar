@@ -20,7 +20,7 @@ parsed as (
         raw_json:event_type::varchar            as event_type,
         raw_json:event_timestamp::timestamp_tz  as event_timestamp,
         date(raw_json:event_timestamp::timestamp_tz) as event_date,
-        hour(raw_json:event_timestamp::timestamp_tz) as event_hour,
+        hour(raw_json:event_timestamp::timestamp_tz)::int as event_hour,
 
         -- dimensions
         raw_json:device_type::varchar           as device_type,
