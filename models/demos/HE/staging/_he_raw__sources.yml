@@ -1,0 +1,179 @@
+version: 2
+
+sources:
+  - name: CSV_DUMP
+    description: >
+      Raw Higher Education data landed from S3 into Snowflake.
+      CSV files are loaded via Snowflake external stage + COPY INTO.
+    database: HE_DEMO
+    schema: RAW_CSV
+    tables:
+      - name: students
+        description: >
+          Student master record. One row per student. Loaded from students.csv.
+        columns:
+          - name: student_id
+            description: Unique student identifier (e.g. STU123456)
+            data_tests:
+              - unique
+              - not_null
+          - name: first_name
+            data_tests:
+              - not_null
+          - name: last_name
+            data_tests:
+              - not_null
+          - name: date_of_birth
+            data_tests:
+              - not_null
+          - name: gender
+            data_tests:
+              - accepted_values:
+                  values: ["Female", "Male", "Non-binary", "Prefer not to say"]
+          - name: nationality
+            data_tests:
+              - not_null
+          - name: ethnicity
+            data_tests:
+              - not_null
+          - name: home_county
+            data_tests:
+              - not_null
+          - name: programme_name
+            data_tests:
+              - not_null
+          - name: programme_code
+            data_tests:
+              - not_null
+          - name: school
+            data_tests:
+              - not_null
+          - name: entry_year
+            data_tests:
+              - not_null
+          - name: current_year_of_study
+            data_tests:
+              - not_null
+          - name: enrolment_status
+            data_tests:
+              - accepted_values:
+                  values: ["Active", "Interrupted", "Withdrawn", "Graduated"]
+          - name: ucas_points
+            data_tests:
+              - not_null
+          - name: email
+            data_tests:
+              - unique
+              - not_null
+          - name: personal_tutor_id
+            data_tests:
+              - not_null
+
+      - name: course_enrolments
+        description: >
+          One row per student-course-term enrolment. Loaded from course_enrolments.csv.
+        columns:
+          - name: enrolment_id
+            data_tests:
+              - unique
+              - not_null
+          - name: student_id
+            data_tests:
+              - not_null
+              - relationships:
+                  arguments:
+                    to: source('CSV_DUMP','students')
+                    field: student_id
+          - name: course_code
+            data_tests:
+              - not_null
+          - name: course_name
+            data_tests:
+              - not_null
+          - name: course_year_level
+            data_tests:
+              - not_null
+          - name: academic_term
+            data_tests:
+              - not_null
+          - name: credits
+            data_tests:
+              - not_null
+          - name: delivery_mode
+            data_tests:
+              - accepted_values:
+                  values: ["In Person", "Hybrid", "Online"]
+          - name: grade
+            data_tests:
+              - accepted_values:
+                  values:
+                    ["A*", "A", "B", "C", "D", "F", "In Progress", "Withdrawn"]
+          - name: lecturer_id
+            data_tests:
+              - not_null
+          - name: enrolment_date
+            data_tests:
+              - not_null
+
+      - name: fee_charges
+        description: >
+          Student fee ledger. One row per charge event. Loaded from fee_charges.csv.
+        columns:
+          - name: fee_id
+            data_tests:
+              - unique
+              - not_null
+          - name: student_id
+            data_tests:
+              - not_null
+              - relationships:
+                  arguments:
+                    to: source('he_raw','students')
+                    field: student_id
+          - name: academic_term
+            data_tests:
+              - not_null
+          - name: fee_type
+            data_tests:
+              - not_null
+          - name: fee_category
+            data_tests:
+              - accepted_values:
+                  values: ["Academic", "Non-Academic"]
+          - name: charge_date
+            data_tests:
+              - not_null
+          - name: amount_charged
+            data_tests:
+              - not_null
+          - name: currency
+            data_tests:
+              - accepted_values:
+                  values: ["GBP"]
+
+  - name: JSON_DUMP
+    description: >
+      Raw Higher Education data landed from S3 into Snowflake.
+      JSON files are loaded into a VARIANT column and parsed in staging.
+    database: HE_DEMO
+    schema: RAW_JSON
+    tables:
+      - name: applications_raw
+        description: >
+          Raw admissions applications loaded from applications.json into a
+          single VARIANT column for semi-structured parsing in staging.
+        columns:
+          - name: raw_json
+            description: Full application JSON document stored as VARIANT
+            data_tests:
+              - not_null
+
+      - name: lms_events_raw
+        description: >
+          Raw LMS clickstream events loaded from lms_events.json into a
+          single VARIANT column for semi-structured parsing in staging.
+        columns:
+          - name: raw_json
+            description: Full LMS event JSON document stored as VARIANT
+            data_tests:
+              - not_null
