@@ -18,11 +18,13 @@ models:
       - name: enrolment_status
         data_tests:
           - accepted_values:
-              values: ["Active", "Interrupted", "Withdrawn", "Graduated"]
+              arguments:
+                values: ["Active", "Interrupted", "Withdrawn", "Graduated"]
       - name: fee_status
         data_tests:
           - accepted_values:
-              values: ["Home", "International"]
+              arguments:
+                values: ["Home", "International"]
 
   - name: stg_csv_dump__course_enrolments
     description: >
@@ -45,16 +47,8 @@ models:
       - name: grade_band
         data_tests:
           - accepted_values:
-              values:
-                [
-                  "Distinction",
-                  "Merit",
-                  "Pass",
-                  "Near Pass",
-                  "Fail",
-                  "In Progress",
-                  "Withdrawn",
-                ]
+              arguments:
+                values: ["Distinction","Merit","Pass","Near Pass","Fail","In Progress","Withdrawn"]
 
   - name: stg_csv_dump__fee_charges
     description: >
@@ -71,4 +65,5 @@ models:
       - name: payment_status
         data_tests:
           - accepted_values:
-              values: ["Fully Paid", "Partially Paid", "Unpaid"]
+              arguments:
+                values: ["Fully Paid", "Partially Paid", "Unpaid"]

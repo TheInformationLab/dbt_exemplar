@@ -31,10 +31,11 @@ models:
       - name: outcome
         data_tests:
           - accepted_values:
-              values:
-                - "Offer Accepted"
-                - "Offer Declined"
-                - "Rejected"
-                - "Withdrawn"
-                - "Conditional Offer"
-                - "Unconditional Offer"
+              arguments:
+                values:
+                  - "Offer Accepted"
+                  - "Offer Declined"
+                  - "Rejected"
+                  - "Withdrawn"
+                  - "Conditional Offer"
+                  - "Unconditional Offer"

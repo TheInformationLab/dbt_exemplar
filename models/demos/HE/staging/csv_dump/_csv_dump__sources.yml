@@ -29,7 +29,8 @@ sources:
           - name: gender
             data_tests:
               - accepted_values:
-                  values: ["Female", "Male", "Non-binary", "Prefer not to say"]
+                  arguments:
+                    values: ["Female", "Male", "Non-binary", "Prefer not to say"]
           - name: nationality
             data_tests:
               - not_null
@@ -57,7 +58,8 @@ sources:
           - name: enrolment_status
             data_tests:
               - accepted_values:
-                  values: ["Active", "Interrupted", "Withdrawn", "Graduated"]
+                  arguments:
+                    values: ["Active", "Interrupted", "Withdrawn", "Graduated"]
           - name: ucas_points
             data_tests:
               - not_null
@@ -102,12 +104,13 @@ sources:
           - name: delivery_mode
             data_tests:
               - accepted_values:
-                  values: ["In Person", "Hybrid", "Online"]
+                  arguments:
+                    values: ["In Person", "Hybrid", "Online"]
           - name: grade
             data_tests:
               - accepted_values:
-                  values:
-                    ["A*", "A", "B", "C", "D", "F", "In Progress", "Withdrawn"]
+                  arguments:
+                    values: ["A*", "A", "B", "C", "D", "F", "In Progress", "Withdrawn"]
           - name: lecturer_id
             data_tests:
               - not_null
@@ -139,7 +142,8 @@ sources:
           - name: fee_category
             data_tests:
               - accepted_values:
-                  values: ["Academic", "Non-Academic"]
+                  arguments:
+                    values: ["Academic", "Non-Academic"]
           - name: charge_date
             data_tests:
               - not_null
@@ -149,4 +153,5 @@ sources:
           - name: currency
             data_tests:
               - accepted_values:
-                  values: ["GBP"]
+                  arguments:
+                    values: ["GBP"]

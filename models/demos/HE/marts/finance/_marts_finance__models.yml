@@ -38,8 +38,10 @@ models:
       - name: payment_status
         data_tests:
           - accepted_values:
-              values: ["Fully Paid", "Partially Paid", "Unpaid"]
+              arguments:
+                values: ["Fully Paid", "Partially Paid", "Unpaid"]
       - name: fee_category
         data_tests:
           - accepted_values:
-              values: ["Academic", "Non-Academic"]
+              arguments:
+                values: ["Academic", "Non-Academic"]

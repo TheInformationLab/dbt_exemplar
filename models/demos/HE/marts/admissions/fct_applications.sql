@@ -5,7 +5,7 @@
 
 with applications as (
 
-    select * from {{ ref('stg_csv_dump__applications') }}
+    select * from {{ ref('stg_json_dump__applications') }}
 
 ),
 

@@ -54,14 +54,5 @@ models:
       - name: event_type
         data_tests:
           - accepted_values:
-              values:
-                [
-                  "login",
-                  "page_view",
-                  "video_view",
-                  "assignment_submit",
-                  "quiz_attempt",
-                  "forum_post",
-                  "resource_download",
-                  "live_session_join",
-                ]
+              arguments:
+                values: ["login","page_view","video_view","assignment_submit","quiz_attempt","forum_post","resource_download","live_session_join"]

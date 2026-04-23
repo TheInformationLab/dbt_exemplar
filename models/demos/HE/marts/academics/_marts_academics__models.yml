@@ -21,15 +21,18 @@ models:
       - name: enrolment_status
         data_tests:
           - accepted_values:
-              values: ["Active", "Interrupted", "Withdrawn", "Graduated"]
+              arguments:
+                values: ["Active", "Interrupted", "Withdrawn", "Graduated"]
       - name: fee_status
         data_tests:
           - accepted_values:
-              values: ["Home", "International"]
+              arguments:
+                values: ["Home", "International"]
       - name: entry_tariff_band
         data_tests:
           - accepted_values:
-              values: ["AAA+", "BBB–AAB", "CCC–BBC", "Below CCC"]
+              arguments:
+                values: ["AAA+", "BBB–AAB", "CCC–BBC", "Below CCC"]
 
   - name: dim_course
     description: >
@@ -61,7 +64,8 @@ models:
       - name: semester_number
         data_tests:
           - accepted_values:
-              values: [1, 2]
+              arguments:
+                values: [1, 2]
 
   - name: fct_enrolments
     description: >
