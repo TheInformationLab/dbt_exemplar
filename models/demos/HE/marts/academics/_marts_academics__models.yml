@@ -1,0 +1,131 @@
+version: 2
+
+models:
+  - name: dim_student
+    description: >
+      Conformed student dimension. One row per student.
+      Connects to all fact tables via student_sk / student_id.
+    columns:
+      - name: student_sk
+        data_tests:
+          - unique
+          - not_null
+      - name: student_id
+        data_tests:
+          - unique
+          - not_null
+      - name: email
+        data_tests:
+          - unique
+          - not_null
+      - name: enrolment_status
+        data_tests:
+          - accepted_values:
+              values: ["Active", "Interrupted", "Withdrawn", "Graduated"]
+      - name: fee_status
+        data_tests:
+          - accepted_values:
+              values: ["Home", "International"]
+      - name: entry_tariff_band
+        data_tests:
+          - accepted_values:
+              values: ["AAA+", "BBB–AAB", "CCC–BBC", "Below CCC"]
+
+  - name: dim_course
+    description: >
+      Course dimension derived from enrolments.
+      One row per course_code.
+    columns:
+      - name: course_sk
+        data_tests:
+          - unique
+          - not_null
+      - name: course_code
+        data_tests:
+          - unique
+          - not_null
+
+  - name: dim_term
+    description: >
+      Conformed academic term dimension. One row per academic term.
+      Shared across academics, admissions, and finance marts.
+    columns:
+      - name: term_sk
+        data_tests:
+          - unique
+          - not_null
+      - name: academic_term
+        data_tests:
+          - unique
+          - not_null
+      - name: semester_number
+        data_tests:
+          - accepted_values:
+              values: [1, 2]
+
+  - name: fct_enrolments
+    description: >
+      Transaction fact. One row per student-course-term enrolment.
+      Primary academic performance fact table.
+    columns:
+      - name: enrolment_sk
+        data_tests:
+          - unique
+          - not_null
+      - name: student_sk
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_student')
+                field: student_sk
+      - name: course_sk
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_course')
+                field: course_sk
+      - name: term_sk
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_term')
+                field: term_sk
+      - name: credits
+        data_tests:
+          - not_null
+      - name: enrolment_count
+        data_tests:
+          - not_null
+
+  - name: fct_lms_activity
+    description: >
+      Periodic snapshot fact. One row per student-course-week.
+      Captures LMS engagement metrics for at-risk and engagement analysis.
+    columns:
+      - name: lms_activity_sk
+        data_tests:
+          - unique
+          - not_null
+      - name: student_sk
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_student')
+                field: student_sk
+      - name: course_sk
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_course')
+                field: course_sk
+      - name: week_start
+        data_tests:
+          - not_null
+      - name: engagement_score
+        data_tests:
+          - not_null

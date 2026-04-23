@@ -1,0 +1,40 @@
+version: 2
+
+models:
+  - name: fct_applications
+    description: >
+      Transaction fact. One row per admissions application.
+      Source is semi-structured JSON parsed via Snowflake VARIANT.
+      Links to dim_student (left join — applicants may not convert),
+      and dim_term via entry year.
+    columns:
+      - name: application_sk
+        data_tests:
+          - unique
+          - not_null
+      - name: application_id
+        data_tests:
+          - unique
+          - not_null
+      - name: programme_code
+        data_tests:
+          - not_null
+      - name: entry_year
+        data_tests:
+          - not_null
+      - name: application_count
+        data_tests:
+          - not_null
+      - name: is_converted
+        data_tests:
+          - not_null
+      - name: outcome
+        data_tests:
+          - accepted_values:
+              values:
+                - "Offer Accepted"
+                - "Offer Declined"
+                - "Rejected"
+                - "Withdrawn"
+                - "Conditional Offer"
+                - "Unconditional Offer"

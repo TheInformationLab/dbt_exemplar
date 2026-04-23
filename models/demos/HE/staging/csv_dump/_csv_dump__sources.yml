@@ -1,7 +1,7 @@
 version: 2
 
 sources:
-  - name: CSV_DUMP
+  - name: csv_dump
     description: >
       Raw Higher Education data landed from S3 into Snowflake.
       CSV files are loaded via Snowflake external stage + COPY INTO.
@@ -150,30 +150,3 @@ sources:
             data_tests:
               - accepted_values:
                   values: ["GBP"]
-
-  - name: JSON_DUMP
-    description: >
-      Raw Higher Education data landed from S3 into Snowflake.
-      JSON files are loaded into a VARIANT column and parsed in staging.
-    database: HE_DEMO
-    schema: RAW_JSON
-    tables:
-      - name: applications_raw
-        description: >
-          Raw admissions applications loaded from applications.json into a
-          single VARIANT column for semi-structured parsing in staging.
-        columns:
-          - name: raw_json
-            description: Full application JSON document stored as VARIANT
-            data_tests:
-              - not_null
-
-      - name: lms_events_raw
-        description: >
-          Raw LMS clickstream events loaded from lms_events.json into a
-          single VARIANT column for semi-structured parsing in staging.
-        columns:
-          - name: raw_json
-            description: Full LMS event JSON document stored as VARIANT
-            data_tests:
-              - not_null

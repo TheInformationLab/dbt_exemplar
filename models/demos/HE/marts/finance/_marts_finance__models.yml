@@ -1,0 +1,45 @@
+version: 2
+
+models:
+  - name: fct_fee_charges
+    description: >
+      Transaction fact. One row per student fee charge event.
+      Covers tuition fees, accommodation, fines, and misc charges.
+      All monetary measures are in GBP.
+    columns:
+      - name: fee_sk
+        data_tests:
+          - unique
+          - not_null
+      - name: fee_id
+        data_tests:
+          - unique
+          - not_null
+      - name: student_sk
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_student')
+                field: student_sk
+      - name: term_sk
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_term')
+                field: term_sk
+      - name: amount_charged
+        data_tests:
+          - not_null
+      - name: outstanding_balance
+        data_tests:
+          - not_null
+      - name: payment_status
+        data_tests:
+          - accepted_values:
+              values: ["Fully Paid", "Partially Paid", "Unpaid"]
+      - name: fee_category
+        data_tests:
+          - accepted_values:
+              values: ["Academic", "Non-Academic"]

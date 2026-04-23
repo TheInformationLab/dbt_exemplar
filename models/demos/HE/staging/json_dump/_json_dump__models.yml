@@ -1,0 +1,67 @@
+version: 2
+
+models:
+  - name: stg_json_dump__applications
+    description: >
+      Parsed admissions applications from JSON VARIANT. One row per application.
+      Nested prior_qualifications array is handled separately in
+      stg_he_raw__application_qualifications.
+    columns:
+      - name: application_id
+        data_tests:
+          - unique
+          - not_null
+      - name: programme_code
+        data_tests:
+          - not_null
+      - name: entry_year
+        data_tests:
+          - not_null
+
+  - name: stg_json_dump__application_qualifications
+    description: >
+      Prior qualifications flattened from the applications JSON array.
+      One row per application × qualification. LATERAL FLATTEN demo model.
+    columns:
+      - name: application_id
+        data_tests:
+          - not_null
+      - name: qualification_seq
+        data_tests:
+          - not_null
+      - name: qualification_type
+        data_tests:
+          - not_null
+      - name: ucas_points
+        data_tests:
+          - not_null
+
+  - name: stg_json_dump__lms_events
+    description: >
+      Parsed LMS clickstream events from JSON VARIANT. One row per event.
+      Adds event_date, event_hour, and derived assessment/login flags.
+    columns:
+      - name: event_id
+        data_tests:
+          - unique
+          - not_null
+      - name: student_id
+        data_tests:
+          - not_null
+      - name: course_code
+        data_tests:
+          - not_null
+      - name: event_type
+        data_tests:
+          - accepted_values:
+              values:
+                [
+                  "login",
+                  "page_view",
+                  "video_view",
+                  "assignment_submit",
+                  "quiz_attempt",
+                  "forum_post",
+                  "resource_download",
+                  "live_session_join",
+                ]
