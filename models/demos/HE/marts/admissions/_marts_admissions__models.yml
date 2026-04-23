@@ -3,39 +3,139 @@ version: 2
 models:
   - name: fct_applications
     description: >
-      Transaction fact. One row per admissions application.
-      Source is semi-structured JSON parsed via Snowflake VARIANT.
-      Links to dim_student (left join — applicants may not convert),
-      and dim_term via entry year.
+      Transaction fact at admissions application grain.
+      Links applications to student and term dimensions where those joins are
+      available for downstream admissions reporting.
     columns:
       - name: application_sk
+        description: '{{ doc("he_col_application_sk") }}'
         data_tests:
           - unique
           - not_null
       - name: application_id
+        description: '{{ doc("he_model_stg_json_dump__applications_column_application_id") }}'
         data_tests:
           - unique
           - not_null
-      - name: programme_code
+      - name: student_sk
+        description: '{{ doc("he_col_student_sk") }}'
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_student')
+                field: student_sk
+      - name: term_sk
+        description: '{{ doc("he_col_term_sk") }}'
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_term')
+                field: term_sk
+      - name: full_name
+        description: '{{ doc("he_col_full_name") }}'
         data_tests:
           - not_null
-      - name: entry_year
-        data_tests:
-          - not_null
-      - name: application_count
-        data_tests:
-          - not_null
-      - name: is_converted
-        data_tests:
-          - not_null
-      - name: outcome
+      - name: gender
+        description: '{{ doc("he_col_gender") }}'
         data_tests:
           - accepted_values:
               arguments:
-                values:
-                  - "Offer Accepted"
-                  - "Offer Declined"
-                  - "Rejected"
-                  - "Withdrawn"
-                  - "Conditional Offer"
-                  - "Unconditional Offer"
+                values: ["Female", "Male", "Non-binary", "Prefer not to say"]
+      - name: nationality
+        description: '{{ doc("he_col_nationality") }}'
+        data_tests:
+          - not_null
+      - name: ethnicity
+        description: '{{ doc("he_col_ethnicity") }}'
+        data_tests:
+          - not_null
+      - name: home_county
+        description: '{{ doc("he_col_home_county") }}'
+        data_tests:
+          - not_null
+      - name: fee_status
+        description: '{{ doc("he_model_stg_json_dump__applications_column_fee_status") }}'
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["Home", "International"]
+      - name: disability_disclosure
+        description: '{{ doc("he_model_stg_json_dump__applications_column_disability_disclosure") }}'
+      - name: programme_name
+        description: '{{ doc("he_col_programme_name") }}'
+        data_tests:
+          - not_null
+      - name: programme_code
+        description: '{{ doc("he_col_programme_code") }}'
+        data_tests:
+          - not_null
+      - name: school
+        description: '{{ doc("he_col_school") }}'
+        data_tests:
+          - not_null
+      - name: entry_year
+        description: '{{ doc("he_col_entry_year") }}'
+        data_tests:
+          - not_null
+      - name: application_source
+        description: '{{ doc("he_model_stg_json_dump__applications_column_application_source") }}'
+        data_tests:
+          - not_null
+      - name: application_date
+        description: '{{ doc("he_model_stg_json_dump__applications_column_application_date") }}'
+        data_tests:
+          - not_null
+      - name: ucas_points
+        description: '{{ doc("he_col_ucas_points") }}'
+        data_tests:
+          - not_null
+      - name: personal_statement_word_count
+        description: '{{ doc("he_model_stg_json_dump__applications_column_personal_statement_word_count") }}'
+      - name: interview_completed
+        description: '{{ doc("he_model_stg_json_dump__applications_column_interview_completed") }}'
+      - name: interview_score
+        description: '{{ doc("he_model_stg_json_dump__applications_column_interview_score") }}'
+      - name: outcome
+        description: '{{ doc("he_model_stg_json_dump__applications_column_outcome") }}'
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["Offer Accepted", "Offer Declined", "Rejected", "Withdrawn", "Conditional Offer", "Unconditional Offer"]
+      - name: outcome_date
+        description: '{{ doc("he_model_stg_json_dump__applications_column_outcome_date") }}'
+      - name: is_converted
+        description: '{{ doc("he_model_stg_json_dump__applications_column_is_converted") }}'
+        data_tests:
+          - not_null
+      - name: application_count
+        description: '{{ doc("he_measure_application_count") }}'
+        data_tests:
+          - not_null
+      - name: converted_flag
+        description: '{{ doc("he_measure_converted_flag") }}'
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [0, 1]
+                quote: false
+      - name: rejected_flag
+        description: '{{ doc("he_measure_rejected_flag") }}'
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [0, 1]
+                quote: false
+      - name: declined_flag
+        description: '{{ doc("he_measure_declined_flag") }}'
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [0, 1]
+                quote: false
+      - name: interviewed_flag
+        description: '{{ doc("he_measure_interviewed_flag") }}'
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [0, 1]
+                quote: false

@@ -2,155 +2,185 @@ version: 2
 
 sources:
   - name: csv_dump
-    description: >
-      Raw Higher Education data landed from S3 into Snowflake.
-      CSV files are loaded via Snowflake external stage + COPY INTO.
+    description: '{{ doc("he_source_csv_dump") }}'
     database: HE_DEMO
     schema: RAW_CSV
     tables:
       - name: students
-        description: >
-          Student master record. One row per student. Loaded from students.csv.
+        description: '{{ doc("he_source_csv_dump_table_students") }}'
         columns:
           - name: student_id
-            description: Unique student identifier (e.g. STU123456)
+            description: '{{ doc("he_col_student_id_pk") }}'
             data_tests:
               - unique
               - not_null
           - name: first_name
+            description: '{{ doc("he_col_first_name") }}'
             data_tests:
               - not_null
           - name: last_name
+            description: '{{ doc("he_col_last_name") }}'
             data_tests:
               - not_null
           - name: date_of_birth
+            description: '{{ doc("he_col_date_of_birth") }}'
             data_tests:
               - not_null
           - name: gender
+            description: '{{ doc("he_col_gender") }}'
             data_tests:
               - accepted_values:
                   arguments:
                     values: ["Female", "Male", "Non-binary", "Prefer not to say"]
           - name: nationality
+            description: '{{ doc("he_col_nationality") }}'
             data_tests:
               - not_null
           - name: ethnicity
+            description: '{{ doc("he_col_ethnicity") }}'
             data_tests:
               - not_null
           - name: home_county
+            description: '{{ doc("he_col_home_county") }}'
             data_tests:
               - not_null
           - name: programme_name
+            description: '{{ doc("he_col_programme_name") }}'
             data_tests:
               - not_null
           - name: programme_code
+            description: '{{ doc("he_col_programme_code") }}'
             data_tests:
               - not_null
           - name: school
+            description: '{{ doc("he_col_school") }}'
             data_tests:
               - not_null
           - name: entry_year
+            description: '{{ doc("he_col_entry_year") }}'
             data_tests:
               - not_null
           - name: current_year_of_study
+            description: '{{ doc("he_col_current_year_of_study") }}'
             data_tests:
               - not_null
           - name: enrolment_status
+            description: '{{ doc("he_col_enrolment_status") }}'
             data_tests:
               - accepted_values:
                   arguments:
                     values: ["Active", "Interrupted", "Withdrawn", "Graduated"]
           - name: ucas_points
+            description: '{{ doc("he_col_ucas_points") }}'
             data_tests:
               - not_null
           - name: email
+            description: '{{ doc("he_col_email") }}'
             data_tests:
               - unique
               - not_null
           - name: personal_tutor_id
+            description: '{{ doc("he_col_personal_tutor_id") }}'
             data_tests:
               - not_null
 
       - name: course_enrolments
-        description: >
-          One row per student-course-term enrolment. Loaded from course_enrolments.csv.
+        description: '{{ doc("he_source_csv_dump_table_course_enrolments") }}'
         columns:
           - name: enrolment_id
+            description: '{{ doc("he_col_enrolment_id") }}'
             data_tests:
               - unique
               - not_null
           - name: student_id
+            description: '{{ doc("he_col_student_id_fk") }}'
             data_tests:
               - not_null
               - relationships:
                   arguments:
-                    to: source('CSV_DUMP','students')
+                    to: source('csv_dump','students')
                     field: student_id
           - name: course_code
+            description: '{{ doc("he_col_course_code") }}'
             data_tests:
               - not_null
           - name: course_name
+            description: '{{ doc("he_col_course_name") }}'
             data_tests:
               - not_null
           - name: course_year_level
+            description: '{{ doc("he_col_course_year_level") }}'
             data_tests:
               - not_null
           - name: academic_term
+            description: '{{ doc("he_col_academic_term") }}'
             data_tests:
               - not_null
           - name: credits
+            description: '{{ doc("he_col_credits") }}'
             data_tests:
               - not_null
           - name: delivery_mode
+            description: '{{ doc("he_col_delivery_mode") }}'
             data_tests:
               - accepted_values:
                   arguments:
                     values: ["In Person", "Hybrid", "Online"]
           - name: grade
+            description: '{{ doc("he_col_grade") }}'
             data_tests:
               - accepted_values:
                   arguments:
                     values: ["A*", "A", "B", "C", "D", "F", "In Progress", "Withdrawn"]
           - name: lecturer_id
+            description: '{{ doc("he_col_lecturer_id") }}'
             data_tests:
               - not_null
           - name: enrolment_date
+            description: '{{ doc("he_col_enrolment_date") }}'
             data_tests:
               - not_null
 
       - name: fee_charges
-        description: >
-          Student fee ledger. One row per charge event. Loaded from fee_charges.csv.
+        description: '{{ doc("he_source_csv_dump_table_fee_charges") }}'
         columns:
           - name: fee_id
+            description: '{{ doc("he_col_fee_id") }}'
             data_tests:
               - unique
               - not_null
           - name: student_id
+            description: '{{ doc("he_col_student_id_fk") }}'
             data_tests:
               - not_null
               - relationships:
                   arguments:
-                    to: source('he_raw','students')
+                    to: source('csv_dump','students')
                     field: student_id
           - name: academic_term
+            description: '{{ doc("he_col_academic_term") }}'
             data_tests:
               - not_null
           - name: fee_type
+            description: '{{ doc("he_col_fee_type") }}'
             data_tests:
               - not_null
           - name: fee_category
+            description: '{{ doc("he_col_fee_category") }}'
             data_tests:
               - accepted_values:
                   arguments:
                     values: ["Academic", "Non-Academic"]
           - name: charge_date
+            description: '{{ doc("he_col_charge_date") }}'
             data_tests:
               - not_null
           - name: amount_charged
+            description: '{{ doc("he_col_amount_charged") }}'
             data_tests:
               - not_null
           - name: currency
+            description: '{{ doc("he_col_currency") }}'
             data_tests:
               - accepted_values:
                   arguments:

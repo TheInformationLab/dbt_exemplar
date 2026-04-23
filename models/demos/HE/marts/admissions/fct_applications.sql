@@ -67,10 +67,10 @@ final as (
 
         -- additive measures
         1                                                       as application_count,
-        case when a.is_converted        then 1 else 0 end      as converted_count,
-        case when a.outcome = 'Rejected' then 1 else 0 end     as rejected_count,
-        case when a.outcome = 'Offer Declined' then 1 else 0 end as declined_count,
-        case when a.interview_completed then 1 else 0 end      as interviewed_count
+        case when a.is_converted then 1 else 0 end              as converted_flag,
+        case when a.outcome = 'Rejected' then 1 else 0 end      as rejected_flag,
+        case when a.outcome = 'Offer Declined' then 1 else 0 end as declined_flag,
+        case when a.interview_completed then 1 else 0 end       as interviewed_flag
 
     from applications a
     left  join dim_student d_stu

@@ -51,20 +51,19 @@ final as (
         s.credits,
         s.numeric_mark,
 
-        -- semi-additive flags (don't SUM — use COUNT or AVG)
+        -- categorical performance attributes
         s.grade,
         s.grade_band,
-        s.is_pass,
 
         -- additive binary measures
-        case when s.is_pass    then 1 else 0 end    as passed_flag,
-        case when s.grade = 'F' then 1 else 0 end   as failed_flag,
-        case when s.grade = 'Withdrawn' then 1 else 0 end as withdrawn_flag,
-        1                                           as enrolment_count
+        case when s.is_pass then 1 else 0 end                 as passed_flag,
+        case when s.grade = 'F' then 1 else 0 end             as failed_flag,
+        case when s.grade = 'Withdrawn' then 1 else 0 end     as withdrawn_flag,
+        1                                                     as enrolment_count
 
     from spine s
-    inner join dim_student  d_stu on s.student_id  = d_stu.student_id
-    inner join dim_course   d_crs on s.course_code = d_crs.course_code
+    inner join dim_student  d_stu on s.student_id    = d_stu.student_id
+    inner join dim_course   d_crs on s.course_code   = d_crs.course_code
     inner join dim_term     d_trm on s.academic_term = d_trm.academic_term
 
 )

@@ -4,79 +4,211 @@ models:
   - name: dim_student
     description: >
       Conformed student dimension. One row per student.
-      Connects to all fact tables via student_sk / student_id.
+      Connects to academic, admissions, and finance facts via student keys.
     columns:
       - name: student_sk
+        description: '{{ doc("he_col_student_sk") }}'
         data_tests:
           - unique
           - not_null
       - name: student_id
+        description: '{{ doc("he_col_student_id_pk") }}'
         data_tests:
           - unique
+          - not_null
+      - name: full_name
+        description: '{{ doc("he_col_full_name") }}'
+        data_tests:
+          - not_null
+      - name: first_name
+        description: '{{ doc("he_col_first_name") }}'
+        data_tests:
+          - not_null
+      - name: last_name
+        description: '{{ doc("he_col_last_name") }}'
+        data_tests:
+          - not_null
+      - name: date_of_birth
+        description: '{{ doc("he_col_date_of_birth") }}'
+        data_tests:
           - not_null
       - name: email
+        description: '{{ doc("he_col_email") }}'
         data_tests:
           - unique
           - not_null
-      - name: enrolment_status
+      - name: gender
+        description: '{{ doc("he_col_gender") }}'
         data_tests:
           - accepted_values:
               arguments:
-                values: ["Active", "Interrupted", "Withdrawn", "Graduated"]
+                values: ["Female", "Male", "Non-binary", "Prefer not to say"]
+      - name: nationality
+        description: '{{ doc("he_col_nationality") }}'
+        data_tests:
+          - not_null
+      - name: ethnicity
+        description: '{{ doc("he_col_ethnicity") }}'
+        data_tests:
+          - not_null
+      - name: home_county
+        description: '{{ doc("he_col_home_county") }}'
+        data_tests:
+          - not_null
       - name: fee_status
+        description: '{{ doc("he_model_stg_csv_dump__students_column_fee_status") }}'
         data_tests:
           - accepted_values:
               arguments:
                 values: ["Home", "International"]
+      - name: programme_name
+        description: '{{ doc("he_col_programme_name") }}'
+        data_tests:
+          - not_null
+      - name: programme_code
+        description: '{{ doc("he_col_programme_code") }}'
+        data_tests:
+          - not_null
+      - name: school
+        description: '{{ doc("he_col_school") }}'
+        data_tests:
+          - not_null
+      - name: entry_year
+        description: '{{ doc("he_col_entry_year") }}'
+        data_tests:
+          - not_null
+      - name: current_year_of_study
+        description: '{{ doc("he_col_current_year_of_study") }}'
+        data_tests:
+          - not_null
+      - name: enrolment_status
+        description: '{{ doc("he_col_enrolment_status") }}'
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["Active", "Interrupted", "Withdrawn", "Graduated"]
+      - name: ucas_points
+        description: '{{ doc("he_col_ucas_points") }}'
+        data_tests:
+          - not_null
       - name: entry_tariff_band
+        description: '{{ doc("he_col_entry_tariff_band") }}'
         data_tests:
           - accepted_values:
               arguments:
                 values: ["AAA+", "BBB–AAB", "CCC–BBC", "Below CCC"]
+      - name: personal_tutor_id
+        description: '{{ doc("he_col_personal_tutor_id") }}'
+        data_tests:
+          - not_null
 
   - name: dim_course
     description: >
-      Course dimension derived from enrolments.
-      One row per course_code.
+      Conformed course dimension. One row per course code.
+      Derived from staged course enrolments for shared reporting use.
     columns:
       - name: course_sk
+        description: '{{ doc("he_col_course_sk") }}'
         data_tests:
           - unique
           - not_null
       - name: course_code
+        description: '{{ doc("he_col_course_code") }}'
         data_tests:
           - unique
           - not_null
+      - name: course_name
+        description: '{{ doc("he_col_course_name") }}'
+        data_tests:
+          - not_null
+      - name: programme_code
+        description: '{{ doc("he_col_programme_code") }}'
+        data_tests:
+          - not_null
+      - name: school
+        description: '{{ doc("he_col_school") }}'
+        data_tests:
+          - not_null
+      - name: course_year_level
+        description: '{{ doc("he_col_course_year_level") }}'
+        data_tests:
+          - not_null
+      - name: level_of_study
+        description: '{{ doc("he_col_level_of_study") }}'
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["Undergraduate"]
 
   - name: dim_term
     description: >
       Conformed academic term dimension. One row per academic term.
-      Shared across academics, admissions, and finance marts.
+      Shared across academic, admissions, and finance marts.
     columns:
       - name: term_sk
+        description: '{{ doc("he_col_term_sk") }}'
         data_tests:
           - unique
           - not_null
       - name: academic_term
+        description: '{{ doc("he_col_academic_term") }}'
         data_tests:
           - unique
           - not_null
+      - name: academic_year_start
+        description: '{{ doc("he_col_academic_year_start") }}'
+        data_tests:
+          - not_null
+      - name: academic_year_end
+        description: '{{ doc("he_col_academic_year_end") }}'
+        data_tests:
+          - not_null
+      - name: academic_year_label
+        description: '{{ doc("he_col_academic_year_label") }}'
+        data_tests:
+          - not_null
       - name: semester_number
+        description: '{{ doc("he_col_semester_number") }}'
         data_tests:
           - accepted_values:
               arguments:
                 values: [1, 2]
+                quote: false
+      - name: semester_name
+        description: '{{ doc("he_col_semester_name") }}'
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["Autumn/Winter", "Spring/Summer"]
+      - name: term_start_year
+        description: '{{ doc("he_col_term_start_year") }}'
+        data_tests:
+          - not_null
+      - name: term_start_month
+        description: '{{ doc("he_col_term_start_month") }}'
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [9, 1]
+                quote: false
 
   - name: fct_enrolments
     description: >
-      Transaction fact. One row per student-course-term enrolment.
-      Primary academic performance fact table.
+      Transaction fact at student-course-term enrolment grain.
+      Primary academic performance fact table for enrolment outcomes and marks.
     columns:
       - name: enrolment_sk
+        description: '{{ doc("he_col_enrolment_sk") }}'
+        data_tests:
+          - unique
+          - not_null
+      - name: enrolment_id
+        description: '{{ doc("he_col_enrolment_id") }}'
         data_tests:
           - unique
           - not_null
       - name: student_sk
+        description: '{{ doc("he_col_student_sk") }}'
         data_tests:
           - not_null
           - relationships:
@@ -84,6 +216,7 @@ models:
                 to: ref('dim_student')
                 field: student_sk
       - name: course_sk
+        description: '{{ doc("he_col_course_sk") }}'
         data_tests:
           - not_null
           - relationships:
@@ -91,29 +224,89 @@ models:
                 to: ref('dim_course')
                 field: course_sk
       - name: term_sk
+        description: '{{ doc("he_col_term_sk") }}'
         data_tests:
           - not_null
           - relationships:
               arguments:
                 to: ref('dim_term')
                 field: term_sk
+      - name: lecturer_id
+        description: '{{ doc("he_col_lecturer_id") }}'
+        data_tests:
+          - not_null
+      - name: delivery_mode
+        description: '{{ doc("he_col_delivery_mode") }}'
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["In Person", "Hybrid", "Online"]
+      - name: enrolment_date
+        description: '{{ doc("he_col_enrolment_date") }}'
+        data_tests:
+          - not_null
       - name: credits
+        description: '{{ doc("he_col_credits") }}'
         data_tests:
           - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: '>= 0'
+      - name: numeric_mark
+        description: '{{ doc("he_model_stg_csv_dump__course_enrolments_column_numeric_mark") }}'
+      - name: grade
+        description: '{{ doc("he_col_grade") }}'
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["A*", "A", "B", "C", "D", "F", "In Progress", "Withdrawn"]
+      - name: grade_band
+        description: '{{ doc("he_model_stg_csv_dump__course_enrolments_column_grade_band") }}'
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["Distinction", "Merit", "Pass", "Near Pass", "Fail", "In Progress", "Withdrawn"]
+      - name: passed_flag
+        description: '{{ doc("he_measure_passed_flag") }}'
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [0, 1]
+                quote: false
+      - name: failed_flag
+        description: '{{ doc("he_measure_failed_flag") }}'
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [0, 1]
+                quote: false
+      - name: withdrawn_flag
+        description: '{{ doc("he_measure_withdrawn_flag") }}'
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [0, 1]
+                quote: false
       - name: enrolment_count
+        description: '{{ doc("he_measure_enrolment_count") }}'
         data_tests:
           - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: '>= 0'
 
   - name: fct_lms_activity
     description: >
-      Periodic snapshot fact. One row per student-course-week.
-      Captures LMS engagement metrics for at-risk and engagement analysis.
+      Periodic snapshot fact at student-course-week grain.
+      Captures LMS engagement metrics used for academic engagement analysis.
     columns:
       - name: lms_activity_sk
+        description: '{{ doc("he_col_lms_activity_sk") }}'
         data_tests:
           - unique
           - not_null
       - name: student_sk
+        description: '{{ doc("he_col_student_sk") }}'
         data_tests:
           - not_null
           - relationships:
@@ -121,6 +314,7 @@ models:
                 to: ref('dim_student')
                 field: student_sk
       - name: course_sk
+        description: '{{ doc("he_col_course_sk") }}'
         data_tests:
           - not_null
           - relationships:
@@ -128,8 +322,83 @@ models:
                 to: ref('dim_course')
                 field: course_sk
       - name: week_start
+        description: Beginning date of the weekly LMS activity window.
         data_tests:
           - not_null
+      - name: total_events
+        description: '{{ doc("he_measure_total_events") }}'
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: '>= 0'
+      - name: logins
+        description: '{{ doc("he_measure_logins") }}'
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: '>= 0'
+      - name: page_views
+        description: '{{ doc("he_measure_page_views") }}'
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: '>= 0'
+      - name: video_views
+        description: '{{ doc("he_measure_video_views") }}'
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: '>= 0'
+      - name: assessment_events
+        description: '{{ doc("he_measure_assessment_events") }}'
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: '>= 0'
+      - name: forum_posts
+        description: '{{ doc("he_measure_forum_posts") }}'
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: '>= 0'
+      - name: total_session_seconds
+        description: '{{ doc("he_measure_total_session_seconds") }}'
+        data_tests:
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: '>= 0'
+      - name: avg_session_seconds
+        description: '{{ doc("he_measure_avg_session_seconds") }}'
+        data_tests:
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: '>= 0'
+      - name: best_score_in_week
+        description: '{{ doc("he_measure_best_score_in_week") }}'
+      - name: mobile_events
+        description: '{{ doc("he_measure_mobile_events") }}'
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: '>= 0'
+      - name: desktop_events
+        description: '{{ doc("he_measure_desktop_events") }}'
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: '>= 0'
       - name: engagement_score
+        description: '{{ doc("he_measure_engagement_score") }}'
         data_tests:
           - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: '>= 0'

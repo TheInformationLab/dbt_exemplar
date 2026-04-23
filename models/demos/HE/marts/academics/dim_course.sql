@@ -42,7 +42,7 @@ final as (
         course_name,
         programme_code,
         school,
-        course_year_level      as year_level,
+        course_year_level,
         'Undergraduate'        as level_of_study   -- extend for PG demo
     from courses
 

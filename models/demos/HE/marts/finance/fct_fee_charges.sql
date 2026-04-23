@@ -51,8 +51,8 @@ final as (
 
         -- flags
         f.waiver_applied,
-        case when f.waiver_applied          then 1 else 0 end as waiver_count,
-        case when f.payment_status = 'Unpaid' then 1 else 0 end as unpaid_count,
+        case when f.waiver_applied then 1 else 0 end            as waiver_flag,
+        case when f.payment_status = 'Unpaid' then 1 else 0 end as unpaid_flag,
         1                                                       as charge_count
 
     from fees f

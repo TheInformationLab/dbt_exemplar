@@ -2,68 +2,247 @@ version: 2
 
 models:
   - name: stg_csv_dump__students
-    description: >
-      Staged student master data. One row per student. Adds fee_status derived field.
+    description: '{{ doc("he_model_stg_csv_dump__students") }}'
     columns:
       - name: student_id
+        description: '{{ doc("he_col_student_id_pk") }}'
         data_tests:
           - unique
           - not_null
+      - name: personal_tutor_id
+        description: '{{ doc("he_col_personal_tutor_id") }}'
+        data_tests:
+          - not_null
+      - name: first_name
+        description: '{{ doc("he_col_first_name") }}'
+        data_tests:
+          - not_null
+      - name: last_name
+        description: '{{ doc("he_col_last_name") }}'
+        data_tests:
+          - not_null
       - name: full_name
+        description: '{{ doc("he_col_full_name") }}'
         data_tests:
           - not_null
       - name: date_of_birth
+        description: '{{ doc("he_col_date_of_birth") }}'
+        data_tests:
+          - not_null
+      - name: email
+        description: '{{ doc("he_col_email") }}'
+        data_tests:
+          - unique
+          - not_null
+      - name: gender
+        description: '{{ doc("he_col_gender") }}'
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["Female", "Male", "Non-binary", "Prefer not to say"]
+      - name: nationality
+        description: '{{ doc("he_col_nationality") }}'
+        data_tests:
+          - not_null
+      - name: ethnicity
+        description: '{{ doc("he_col_ethnicity") }}'
+        data_tests:
+          - not_null
+      - name: home_county
+        description: '{{ doc("he_col_home_county") }}'
+        data_tests:
+          - not_null
+      - name: programme_name
+        description: '{{ doc("he_col_programme_name") }}'
+        data_tests:
+          - not_null
+      - name: programme_code
+        description: '{{ doc("he_col_programme_code") }}'
+        data_tests:
+          - not_null
+      - name: school
+        description: '{{ doc("he_col_school") }}'
+        data_tests:
+          - not_null
+      - name: entry_year
+        description: '{{ doc("he_col_entry_year") }}'
+        data_tests:
+          - not_null
+      - name: current_year_of_study
+        description: '{{ doc("he_col_current_year_of_study") }}'
         data_tests:
           - not_null
       - name: enrolment_status
+        description: '{{ doc("he_col_enrolment_status") }}'
         data_tests:
           - accepted_values:
               arguments:
                 values: ["Active", "Interrupted", "Withdrawn", "Graduated"]
+      - name: ucas_points
+        description: '{{ doc("he_col_ucas_points") }}'
+        data_tests:
+          - not_null
       - name: fee_status
+        description: '{{ doc("he_model_stg_csv_dump__students_column_fee_status") }}'
         data_tests:
           - accepted_values:
               arguments:
                 values: ["Home", "International"]
+      - name: _loaded_at
+        description: '{{ doc("he_col__loaded_at") }}'
 
   - name: stg_csv_dump__course_enrolments
-    description: >
-      Staged course enrolments. One row per student-course-term.
-      Adds grade_band classification and is_pass flag.
+    description: '{{ doc("he_model_stg_csv_dump__course_enrolments") }}'
     columns:
       - name: enrolment_id
+        description: '{{ doc("he_col_enrolment_id") }}'
         data_tests:
           - unique
           - not_null
       - name: student_id
+        description: '{{ doc("he_col_student_id_fk") }}'
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_csv_dump__students')
+                field: student_id
+      - name: lecturer_id
+        description: '{{ doc("he_col_lecturer_id") }}'
         data_tests:
           - not_null
       - name: course_code
+        description: '{{ doc("he_col_course_code") }}'
+        data_tests:
+          - not_null
+      - name: course_name
+        description: '{{ doc("he_col_course_name") }}'
+        data_tests:
+          - not_null
+      - name: course_year_level
+        description: '{{ doc("he_col_course_year_level") }}'
         data_tests:
           - not_null
       - name: academic_term
+        description: '{{ doc("he_col_academic_term") }}'
         data_tests:
           - not_null
-      - name: grade_band
+      - name: academic_year_start
+        description: '{{ doc("he_model_stg_csv_dump__course_enrolments_column_academic_year_start") }}'
+        data_tests:
+          - not_null
+      - name: semester_number
+        description: '{{ doc("he_model_stg_csv_dump__course_enrolments_column_semester_number") }}'
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [1, 2]
+      - name: credits
+        description: '{{ doc("he_col_credits") }}'
+        data_tests:
+          - not_null
+      - name: delivery_mode
+        description: '{{ doc("he_col_delivery_mode") }}'
         data_tests:
           - accepted_values:
               arguments:
-                values: ["Distinction","Merit","Pass","Near Pass","Fail","In Progress","Withdrawn"]
+                values: ["In Person", "Hybrid", "Online"]
+      - name: enrolment_date
+        description: '{{ doc("he_col_enrolment_date") }}'
+        data_tests:
+          - not_null
+      - name: grade
+        description: '{{ doc("he_col_grade") }}'
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["A*", "A", "B", "C", "D", "F", "In Progress", "Withdrawn"]
+      - name: numeric_mark
+        description: '{{ doc("he_model_stg_csv_dump__course_enrolments_column_numeric_mark") }}'
+      - name: is_pass
+        description: '{{ doc("he_model_stg_csv_dump__course_enrolments_column_is_pass") }}'
+      - name: grade_band
+        description: '{{ doc("he_model_stg_csv_dump__course_enrolments_column_grade_band") }}'
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["Distinction", "Merit", "Pass", "Near Pass", "Fail", "In Progress", "Withdrawn"]
+      - name: _loaded_at
+        description: '{{ doc("he_col__loaded_at") }}'
 
   - name: stg_csv_dump__fee_charges
-    description: >
-      Staged fee charge ledger. One row per charge event.
-      Adds payment_status derived classification.
+    description: '{{ doc("he_model_stg_csv_dump__fee_charges") }}'
     columns:
       - name: fee_id
+        description: '{{ doc("he_col_fee_id") }}'
         data_tests:
           - unique
           - not_null
       - name: student_id
+        description: '{{ doc("he_col_student_id_fk") }}'
         data_tests:
           - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_csv_dump__students')
+                field: student_id
+      - name: academic_term
+        description: '{{ doc("he_col_academic_term") }}'
+        data_tests:
+          - not_null
+      - name: academic_year_start
+        description: '{{ doc("he_model_stg_csv_dump__fee_charges_column_academic_year_start") }}'
+        data_tests:
+          - not_null
+      - name: fee_type
+        description: '{{ doc("he_col_fee_type") }}'
+        data_tests:
+          - not_null
+      - name: fee_category
+        description: '{{ doc("he_col_fee_category") }}'
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["Academic", "Non-Academic"]
+      - name: charge_date
+        description: '{{ doc("he_col_charge_date") }}'
+        data_tests:
+          - not_null
+      - name: currency
+        description: '{{ doc("he_col_currency") }}'
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["GBP"]
+      - name: amount_charged
+        description: '{{ doc("he_col_amount_charged") }}'
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: ">= 0"
+      - name: amount_paid
+        description: '{{ doc("he_model_stg_csv_dump__fee_charges_column_amount_paid") }}'
+        data_tests:
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: ">= 0"
+      - name: outstanding_balance
+        description: '{{ doc("he_model_stg_csv_dump__fee_charges_column_outstanding_balance") }}'
+        data_tests:
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: ">= 0"
+      - name: payment_plan
+        description: '{{ doc("he_model_stg_csv_dump__fee_charges_column_payment_plan") }}'
+      - name: waiver_applied
+        description: '{{ doc("he_model_stg_csv_dump__fee_charges_column_waiver_applied") }}'
       - name: payment_status
+        description: '{{ doc("he_model_stg_csv_dump__fee_charges_column_payment_status") }}'
         data_tests:
           - accepted_values:
               arguments:
                 values: ["Fully Paid", "Partially Paid", "Unpaid"]
+      - name: _loaded_at
+        description: '{{ doc("he_col__loaded_at") }}'
