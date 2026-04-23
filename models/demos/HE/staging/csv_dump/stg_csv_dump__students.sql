@@ -19,7 +19,7 @@ renamed as (
         first_name,
         last_name,
         first_name || ' ' || last_name   as full_name,
-        date_of_birth::date              as date_of_birth,
+        to_date(date_of_birth,'DD/MM/YYYY')::date              as date_of_birth,
         email,
 
         -- demographics
