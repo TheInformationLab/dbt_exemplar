@@ -1,0 +1,102 @@
+version: 2
+
+models:
+  - name: fct_fee_charges
+    description: >
+      Transaction fact at student fee charge grain.
+      Covers academic and non-academic charges with GBP-denominated measures.
+    columns:
+      - name: fee_sk
+        description: '{{ doc("he_col_fee_sk") }}'
+        data_tests:
+          - unique
+          - not_null
+      - name: fee_id
+        description: '{{ doc("he_col_fee_id") }}'
+        data_tests:
+          - unique
+          - not_null
+      - name: student_sk
+        description: '{{ doc("he_col_student_sk") }}'
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_student')
+                field: student_sk
+      - name: term_sk
+        description: '{{ doc("he_col_term_sk") }}'
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_term')
+                field: term_sk
+      - name: fee_type
+        description: '{{ doc("he_col_fee_type") }}'
+        data_tests:
+          - not_null
+      - name: fee_category
+        description: '{{ doc("he_col_fee_category") }}'
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["Academic", "Non-Academic"]
+      - name: payment_plan
+        description: '{{ doc("he_model_stg_csv_dump__fee_charges_column_payment_plan") }}'
+      - name: payment_status
+        description: '{{ doc("he_model_stg_csv_dump__fee_charges_column_payment_status") }}'
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["Fully Paid", "Partially Paid", "Unpaid"]
+      - name: currency
+        description: '{{ doc("he_col_currency") }}'
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["GBP"]
+      - name: charge_date
+        description: '{{ doc("he_col_charge_date") }}'
+        data_tests:
+          - not_null
+      - name: amount_charged
+        description: '{{ doc("he_col_amount_charged") }}'
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: '>= 0'
+      - name: amount_paid
+        description: '{{ doc("he_model_stg_csv_dump__fee_charges_column_amount_paid") }}'
+        data_tests:
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: '>= 0'
+      - name: outstanding_balance
+        description: '{{ doc("he_model_stg_csv_dump__fee_charges_column_outstanding_balance") }}'
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: '>= 0'
+      - name: waiver_applied
+        description: '{{ doc("he_model_stg_csv_dump__fee_charges_column_waiver_applied") }}'
+      - name: waiver_flag
+        description: '{{ doc("he_measure_waiver_flag") }}'
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [0, 1]
+                quote: false
+      - name: unpaid_flag
+        description: '{{ doc("he_measure_unpaid_flag") }}'
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [0, 1]
+                quote: false
+      - name: charge_count
+        description: '{{ doc("he_measure_charge_count") }}'
+        data_tests:
+          - not_null

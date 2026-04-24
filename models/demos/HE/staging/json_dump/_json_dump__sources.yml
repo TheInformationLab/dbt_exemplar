@@ -1,0 +1,23 @@
+version: 2
+
+sources:
+  - name: json_dump
+    description: '{{ doc("he_source_json_dump") }}'
+    database: HE_DEMO
+    schema: RAW_JSON
+    tables:
+      - name: applications_raw
+        description: '{{ doc("he_source_json_dump_table_applications_raw") }}'
+        columns:
+          - name: raw_json
+            description: '{{ doc("he_col_raw_application_json") }}'
+            data_tests:
+              - not_null
+
+      - name: lms_events_raw
+        description: '{{ doc("he_source_json_dump_table_lms_events_raw") }}'
+        columns:
+          - name: raw_json
+            description: '{{ doc("he_col_raw_lms_event_json") }}'
+            data_tests:
+              - not_null

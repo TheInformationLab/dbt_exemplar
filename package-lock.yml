@@ -7,5 +7,8 @@ packages:
     version: 0.17.0
   - git: https://github.com/dbt-labs/dbt-audit-helper.git
     name: audit_helper
-    revision: acc7cad15a9a5cd0c2a928fafb888cffd135790e
-sha1_hash: 8977c617797e285954d8ce2a7db62bc0c78ae3ac
+    revision: 3bd0ca4e9d79b7d740ad7e77384b3d03a16cf242
+  - name: codegen
+    package: dbt-labs/codegen
+    version: 0.14.0
+sha1_hash: 7d74531da995f7b929355724d9cc545f61f5c86a

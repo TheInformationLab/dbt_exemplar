@@ -1,0 +1,245 @@
+version: 2
+
+models:
+  - name: int_student_enrolment_spine
+    description: >
+      Intermediate academic spine at student-course-term enrolment grain.
+      Combines staged enrolments with current student attributes for reuse in
+      downstream academic marts.
+    columns:
+      - name: enrolment_id
+        description: '{{ doc("he_col_enrolment_id") }}'
+        data_tests:
+          - unique
+          - not_null
+      - name: student_id
+        description: '{{ doc("he_col_student_id_fk") }}'
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_csv_dump__students')
+                field: student_id
+      - name: lecturer_id
+        description: '{{ doc("he_col_lecturer_id") }}'
+        data_tests:
+          - not_null
+      - name: course_code
+        description: '{{ doc("he_col_course_code") }}'
+        data_tests:
+          - not_null
+      - name: course_name
+        description: '{{ doc("he_col_course_name") }}'
+        data_tests:
+          - not_null
+      - name: course_year_level
+        description: '{{ doc("he_col_course_year_level") }}'
+        data_tests:
+          - not_null
+      - name: academic_term
+        description: '{{ doc("he_col_academic_term") }}'
+        data_tests:
+          - not_null
+      - name: academic_year_start
+        description: '{{ doc("he_col_academic_year_start") }}'
+        data_tests:
+          - not_null
+      - name: semester_number
+        description: '{{ doc("he_col_semester_number") }}'
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [1, 2]
+                quote: false
+      - name: credits
+        description: '{{ doc("he_col_credits") }}'
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: '>= 0'
+      - name: delivery_mode
+        description: '{{ doc("he_col_delivery_mode") }}'
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["In Person", "Hybrid", "Online"]
+      - name: enrolment_date
+        description: '{{ doc("he_col_enrolment_date") }}'
+        data_tests:
+          - not_null
+      - name: grade
+        description: '{{ doc("he_col_grade") }}'
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["A*", "A", "B", "C", "D", "F", "In Progress", "Withdrawn"]
+      - name: grade_band
+        description: '{{ doc("he_model_stg_csv_dump__course_enrolments_column_grade_band") }}'
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["Distinction", "Merit", "Pass", "Near Pass", "Fail", "In Progress", "Withdrawn"]
+      - name: numeric_mark
+        description: '{{ doc("he_model_stg_csv_dump__course_enrolments_column_numeric_mark") }}'
+      - name: is_pass
+        description: '{{ doc("he_model_stg_csv_dump__course_enrolments_column_is_pass") }}'
+      - name: full_name
+        description: '{{ doc("he_col_full_name") }}'
+        data_tests:
+          - not_null
+      - name: programme_name
+        description: '{{ doc("he_col_programme_name") }}'
+        data_tests:
+          - not_null
+      - name: programme_code
+        description: '{{ doc("he_col_programme_code") }}'
+        data_tests:
+          - not_null
+      - name: school
+        description: '{{ doc("he_col_school") }}'
+        data_tests:
+          - not_null
+      - name: entry_year
+        description: '{{ doc("he_col_entry_year") }}'
+        data_tests:
+          - not_null
+      - name: current_year_of_study
+        description: '{{ doc("he_col_current_year_of_study") }}'
+        data_tests:
+          - not_null
+      - name: enrolment_status
+        description: '{{ doc("he_col_enrolment_status") }}'
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["Active", "Interrupted", "Withdrawn", "Graduated"]
+      - name: fee_status
+        description: '{{ doc("he_model_stg_csv_dump__students_column_fee_status") }}'
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["Home", "International"]
+      - name: gender
+        description: '{{ doc("he_col_gender") }}'
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["Female", "Male", "Non-binary", "Prefer not to say"]
+      - name: nationality
+        description: '{{ doc("he_col_nationality") }}'
+        data_tests:
+          - not_null
+      - name: ethnicity
+        description: '{{ doc("he_col_ethnicity") }}'
+        data_tests:
+          - not_null
+      - name: home_county
+        description: '{{ doc("he_col_home_county") }}'
+        data_tests:
+          - not_null
+      - name: ucas_points
+        description: '{{ doc("he_col_ucas_points") }}'
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: '>= 0'
+
+  - name: int_student_lms_activity
+    description: >
+      Intermediate weekly LMS activity summary at student-course-week grain.
+      Aggregates raw LMS events into reusable engagement measures for academic
+      reporting and at-risk analysis.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [student_id, course_code, week_start]
+    columns:
+      - name: student_id
+        description: '{{ doc("he_col_student_id_fk") }}'
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_csv_dump__students')
+                field: student_id
+      - name: course_code
+        description: '{{ doc("he_col_course_code") }}'
+        data_tests:
+          - not_null
+      - name: week_start
+        description: Beginning date of the weekly LMS activity window.
+        data_tests:
+          - not_null
+      - name: total_events
+        description: '{{ doc("he_measure_total_events") }}'
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: '>= 0'
+      - name: logins
+        description: '{{ doc("he_measure_logins") }}'
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: '>= 0'
+      - name: page_views
+        description: '{{ doc("he_measure_page_views") }}'
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: '>= 0'
+      - name: video_views
+        description: '{{ doc("he_measure_video_views") }}'
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: '>= 0'
+      - name: assessment_events
+        description: '{{ doc("he_measure_assessment_events") }}'
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: '>= 0'
+      - name: forum_posts
+        description: '{{ doc("he_measure_forum_posts") }}'
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: '>= 0'
+      - name: total_session_seconds
+        description: '{{ doc("he_measure_total_session_seconds") }}'
+        data_tests:
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: '>= 0'
+      - name: avg_session_seconds
+        description: '{{ doc("he_measure_avg_session_seconds") }}'
+        data_tests:
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: '>= 0'
+      - name: best_score_in_week
+        description: '{{ doc("he_measure_best_score_in_week") }}'
+      - name: mobile_events
+        description: '{{ doc("he_measure_mobile_events") }}'
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: '>= 0'
+      - name: desktop_events
+        description: '{{ doc("he_measure_desktop_events") }}'
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: '>= 0'

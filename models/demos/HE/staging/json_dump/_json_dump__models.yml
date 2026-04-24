@@ -1,0 +1,217 @@
+version: 2
+
+models:
+  - name: stg_json_dump__applications
+    description: '{{ doc("he_model_stg_json_dump__applications") }}'
+    columns:
+      - name: application_id
+        description: '{{ doc("he_model_stg_json_dump__applications_column_application_id") }}'
+        data_tests:
+          - unique
+          - not_null
+      - name: first_name
+        description: '{{ doc("he_col_first_name") }}'
+        data_tests:
+          - not_null
+      - name: last_name
+        description: '{{ doc("he_col_last_name") }}'
+        data_tests:
+          - not_null
+      - name: full_name
+        description: '{{ doc("he_col_full_name") }}'
+        data_tests:
+          - not_null
+      - name: date_of_birth
+        description: '{{ doc("he_col_date_of_birth") }}'
+        data_tests:
+          - not_null
+      - name: gender
+        description: '{{ doc("he_col_gender") }}'
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["Female", "Male", "Non-binary", "Prefer not to say"]
+      - name: nationality
+        description: '{{ doc("he_col_nationality") }}'
+        data_tests:
+          - not_null
+      - name: ethnicity
+        description: '{{ doc("he_col_ethnicity") }}'
+        data_tests:
+          - not_null
+      - name: home_county
+        description: '{{ doc("he_col_home_county") }}'
+        data_tests:
+          - not_null
+      - name: email
+        description: '{{ doc("he_col_email") }}'
+        data_tests:
+          - not_null
+      - name: phone
+        description: '{{ doc("he_model_stg_json_dump__applications_column_phone") }}'
+      - name: programme_name
+        description: '{{ doc("he_col_programme_name") }}'
+        data_tests:
+          - not_null
+      - name: programme_code
+        description: '{{ doc("he_col_programme_code") }}'
+        data_tests:
+          - not_null
+      - name: school
+        description: '{{ doc("he_col_school") }}'
+        data_tests:
+          - not_null
+      - name: entry_year
+        description: '{{ doc("he_col_entry_year") }}'
+        data_tests:
+          - not_null
+      - name: application_source
+        description: '{{ doc("he_model_stg_json_dump__applications_column_application_source") }}'
+        data_tests:
+          - not_null
+      - name: application_date
+        description: '{{ doc("he_model_stg_json_dump__applications_column_application_date") }}'
+        data_tests:
+          - not_null
+      - name: ucas_points
+        description: '{{ doc("he_col_ucas_points") }}'
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: ">= 0"
+      - name: interview_completed
+        description: '{{ doc("he_model_stg_json_dump__applications_column_interview_completed") }}'
+      - name: interview_score
+        description: '{{ doc("he_model_stg_json_dump__applications_column_interview_score") }}'
+        data_tests:
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: ">= 0"
+      - name: outcome
+        description: '{{ doc("he_model_stg_json_dump__applications_column_outcome") }}'
+        data_tests:
+          - not_null
+      - name: outcome_date
+        description: '{{ doc("he_model_stg_json_dump__applications_column_outcome_date") }}'
+      - name: personal_statement_word_count
+        description: '{{ doc("he_model_stg_json_dump__applications_column_personal_statement_word_count") }}'
+        data_tests:
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: ">= 0"
+      - name: disability_disclosure
+        description: '{{ doc("he_model_stg_json_dump__applications_column_disability_disclosure") }}'
+      - name: fee_status
+        description: '{{ doc("he_model_stg_json_dump__applications_column_fee_status") }}'
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["Home", "International"]
+      - name: is_converted
+        description: '{{ doc("he_model_stg_json_dump__applications_column_is_converted") }}'
+      - name: _loaded_at
+        description: '{{ doc("he_col__loaded_at") }}'
+
+  - name: stg_json_dump__application_qualifications
+    description: '{{ doc("he_model_stg_json_dump__application_qualifications") }}'
+    columns:
+      - name: application_id
+        description: '{{ doc("he_model_stg_json_dump__application_qualifications_column_application_id") }}'
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_json_dump__applications')
+                field: application_id
+      - name: qualification_seq
+        description: '{{ doc("he_model_stg_json_dump__application_qualifications_column_qualification_seq") }}'
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: ">= 0"
+      - name: qualification_type
+        description: '{{ doc("he_model_stg_json_dump__application_qualifications_column_qualification_type") }}'
+        data_tests:
+          - not_null
+      - name: subject
+        description: '{{ doc("he_model_stg_json_dump__application_qualifications_column_subject") }}'
+        data_tests:
+          - not_null
+      - name: grade
+        description: '{{ doc("he_model_stg_json_dump__application_qualifications_column_grade") }}'
+        data_tests:
+          - not_null
+      - name: ucas_points
+        description: '{{ doc("he_model_stg_json_dump__application_qualifications_column_ucas_points") }}'
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: ">= 0"
+      - name: _loaded_at
+        description: '{{ doc("he_col__loaded_at") }}'
+
+  - name: stg_json_dump__lms_events
+    description: '{{ doc("he_model_stg_json_dump__lms_events") }}'
+    columns:
+      - name: event_id
+        description: '{{ doc("he_model_stg_json_dump__lms_events_column_event_id") }}'
+        data_tests:
+          - unique
+          - not_null
+      - name: student_id
+        description: '{{ doc("he_col_student_id_fk") }}'
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_csv_dump__students')
+                field: student_id
+      - name: course_code
+        description: '{{ doc("he_col_course_code") }}'
+        data_tests:
+          - not_null
+      - name: event_type
+        description: '{{ doc("he_model_stg_json_dump__lms_events_column_event_type") }}'
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["login", "page_view", "video_view", "assignment_submit", "quiz_attempt", "forum_post", "resource_download", "live_session_join"]
+      - name: event_timestamp
+        description: '{{ doc("he_model_stg_json_dump__lms_events_column_event_timestamp") }}'
+        data_tests:
+          - not_null
+      - name: event_date
+        description: '{{ doc("he_model_stg_json_dump__lms_events_column_event_date") }}'
+        data_tests:
+          - not_null
+      - name: event_hour
+        description: '{{ doc("he_model_stg_json_dump__lms_events_column_event_hour") }}'
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 23
+      - name: device_type
+        description: '{{ doc("he_model_stg_json_dump__lms_events_column_device_type") }}'
+      - name: ip_region
+        description: '{{ doc("he_model_stg_json_dump__lms_events_column_ip_region") }}'
+      - name: session_duration_seconds
+        description: '{{ doc("he_model_stg_json_dump__lms_events_column_session_duration_seconds") }}'
+        data_tests:
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: ">= 0"
+      - name: resource_name
+        description: '{{ doc("he_model_stg_json_dump__lms_events_column_resource_name") }}'
+      - name: score
+        description: '{{ doc("he_model_stg_json_dump__lms_events_column_score") }}'
+      - name: is_assessment_event
+        description: '{{ doc("he_model_stg_json_dump__lms_events_column_is_assessment_event") }}'
+      - name: is_login_event
+        description: '{{ doc("he_model_stg_json_dump__lms_events_column_is_login_event") }}'
+      - name: _loaded_at
+        description: '{{ doc("he_col__loaded_at") }}'
