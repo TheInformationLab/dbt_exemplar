@@ -39,15 +39,11 @@ models:
 
         intermediate:
           +materialized: view
+          +schema: intermediate
 
         marts:
           +materialized: table
-          academics:
-            +schema: marts_academics
-          admissions:
-            +schema: marts_admissions
-          finance:
-            +schema: marts_finance
+          +schema: he_prod
 
     jaffle-shop:
       staging:
