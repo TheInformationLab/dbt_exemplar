@@ -6,7 +6,7 @@
         {{ default_schema }}
 
     {# Use the custom schema name as full schema in prod runs #}
-    {% elif target.name == 'prod' %}
+    {% elif target.name == 'Prod' %}
         {{ custom_schema_name | trim }}
 
     {# append custom schema name if in dev or staging or other #}
