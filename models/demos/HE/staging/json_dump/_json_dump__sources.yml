@@ -5,6 +5,16 @@ sources:
     description: '{{ doc("he_source_json_dump") }}'
     database: HE_DEMO
     schema: RAW_JSON
+    config:
+      freshness: 
+        warn_after: 
+          count: 30
+          period: day
+        error_after: 
+          count: 90
+          period: day
+
+
     tables:
       - name: applications_raw
         description: '{{ doc("he_source_json_dump_table_applications_raw") }}'

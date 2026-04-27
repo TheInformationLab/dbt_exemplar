@@ -5,6 +5,16 @@ sources:
     description: '{{ doc("he_source_csv_dump") }}'
     database: HE_DEMO
     schema: RAW_CSV
+    config:
+      freshness: 
+        warn_after: 
+          count: 30
+          period: day
+        error_after: 
+          count: 90
+          period: day
+        
+
     tables:
       - name: students
         description: '{{ doc("he_source_csv_dump_table_students") }}'
