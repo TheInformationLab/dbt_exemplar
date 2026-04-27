@@ -28,7 +28,10 @@ models:
   dbt_exemplar:
     demos:
       HE:
-        +database: HE_DEMO
+        +database: | 
+          {%- if target.name == "Prod" -%} HE_DEMO
+          {%- else -%} "{{target.database}}"
+          {%- endif -%}
 
         staging:
           +materialized: view
