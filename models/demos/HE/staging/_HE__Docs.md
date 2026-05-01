@@ -258,17 +258,6 @@ Word count of the submitted personal statement.
 Applicant disability disclosure status captured on the application.
 {% enddocs %}
 
-{% docs he_model_stg_json_dump__applications_column_fee_status %}
-Derived fee status classifying the applicant as Home or International based on nationality.
-
-Accepted values:
-
-| value | meaning |
-|---|---|
-| Home | Applicant is classified as domestic for fee purposes. |
-| International | Applicant is classified as overseas for fee purposes. |
-{% enddocs %}
-
 {% docs he_model_stg_json_dump__applications_column_is_converted %}
 Derived boolean flag indicating whether the application resulted in an accepted offer.
 {% enddocs %}
@@ -370,7 +359,7 @@ Derived boolean flag indicating whether the event type is login.
 Staged student master data. One row per student. Standardizes types, derives full_name, classifies fee_status, and adds an audit timestamp.
 {% enddocs %}
 
-{% docs he_model_stg_csv_dump__students_column_fee_status %}
+{% docs he_model_column_fee_status %}
 Derived fee status classifying the student as Home or International based on nationality.
 
 Accepted values:

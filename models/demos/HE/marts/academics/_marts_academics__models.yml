@@ -56,7 +56,7 @@ models:
         data_tests:
           - not_null
       - name: fee_status
-        description: '{{ doc("he_model_stg_csv_dump__students_column_fee_status") }}'
+        description: '{{ doc("he_model_column_fee_status") }}'
         data_tests:
           - accepted_values:
               arguments:
