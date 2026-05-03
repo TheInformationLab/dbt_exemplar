@@ -43,7 +43,7 @@ models:
 
         marts:
           +materialized: table
-          +schema: he_prod
+          +schema: HE_PROD
 
     jaffle-shop:
       staging:
