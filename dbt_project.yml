@@ -32,6 +32,10 @@ models:
           {%- if target.name == "Prod" -%} HE_DEMO
           {%- else -%} "{{target.database}}"
           {%- endif -%}
+        +quoting:
+            database: false
+            schema: false
+            identifier: false
 
         staging:
           +materialized: view
