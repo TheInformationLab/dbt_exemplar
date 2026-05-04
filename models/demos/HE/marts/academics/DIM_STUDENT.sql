@@ -1,6 +1,14 @@
 -- Dimension: student
 -- Conformed dimension. One row per student.
 -- Connects to all fact tables via student_id.
+{{
+    config(
+        materialized='incremental',
+        unique_key='student_sk',
+        incrmental_strategy = 'insert_overwrite'
+    )
+}}
+
 
 with students as (
 

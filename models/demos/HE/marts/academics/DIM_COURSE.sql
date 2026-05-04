@@ -1,6 +1,14 @@
 -- Dimension: course
 -- Derived from course_enrolments — no separate source table.
 -- One row per course_code.
+{{
+    config(
+        materialized='incremental',
+        unique_key='course_sk',
+        incrmental_strategy = 'insert_overwrite'
+    )
+}}
+
 
 with enrolments as (
 

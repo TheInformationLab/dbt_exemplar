@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: fct_fee_charges
+  - name: FCT_FEE_CHARGES
     description: >
       Transaction fact at student fee charge grain.
       Covers academic and non-academic charges with GBP-denominated measures.
@@ -22,7 +22,7 @@ models:
           - not_null
           - relationships:
               arguments:
-                to: ref('dim_student')
+                to: ref('DIM_STUDENT')
                 field: student_sk
       - name: term_sk
         description: '{{ doc("he_col_term_sk") }}'
@@ -30,7 +30,7 @@ models:
           - not_null
           - relationships:
               arguments:
-                to: ref('dim_term')
+                to: ref('DIM_TERM')
                 field: term_sk
       - name: fee_type
         description: '{{ doc("he_col_fee_type") }}'

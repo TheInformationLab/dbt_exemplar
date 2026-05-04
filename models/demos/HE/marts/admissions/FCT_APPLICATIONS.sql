@@ -2,6 +2,14 @@
 -- Grain: one row per application
 -- Kimball type: transaction fact
 -- Domain: admissions mart
+{{
+    config(
+        materialized='incremental',
+        unique_key='application_sk',
+        incrmental_strategy = 'insert_overwrite'
+    )
+}}
+
 
 with applications as (
 
@@ -9,16 +17,16 @@ with applications as (
 
 ),
 
-dim_student as (
+DIM_STUDENT as (
 
     -- left join: applicants may not have become students
-    select student_sk, student_id, email from {{ ref('dim_student') }}
+    select student_sk, student_id, email from {{ ref('DIM_STUDENT') }}
 
 ),
 
-dim_term as (
+DIM_TERM as (
 
-    select term_sk, academic_term from {{ ref('dim_term') }}
+    select term_sk, academic_term from {{ ref('DIM_TERM') }}
 
 ),
 
@@ -73,9 +81,9 @@ final as (
         case when a.interview_completed then 1 else 0 end       as interviewed_flag
 
     from applications a
-    left  join dim_student d_stu
+    left  join DIM_STUDENT d_stu
         on a.email = d_stu.email
-    left  join dim_term d_trm
+    left  join DIM_TERM d_trm
         on a.entry_year::varchar || '/24 S1' = d_trm.academic_term  -- approximate join for demo
 
 )

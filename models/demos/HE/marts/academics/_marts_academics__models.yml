@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: dim_student
+  - name: DIM_STUDENT
     description: >
       Conformed student dimension. One row per student.
       Connects to academic, admissions, and finance facts via student keys.
@@ -102,7 +102,7 @@ models:
         data_tests:
           - not_null
 
-  - name: dim_course
+  - name: DIM_COURSE
     description: >
       Conformed course dimension. One row per course code.
       Derived from staged course enrolments for shared reporting use.
@@ -140,7 +140,7 @@ models:
               arguments:
                 values: ["Undergraduate"]
 
-  - name: dim_term
+  - name: DIM_TERM
     description: >
       Conformed academic term dimension. One row per academic term.
       Shared across academic, admissions, and finance marts.
@@ -192,7 +192,7 @@ models:
                 values: [9, 1]
                 quote: false
 
-  - name: fct_enrolments
+  - name: FCT_ENROLMENTS
     description: >
       Transaction fact at student-course-term enrolment grain.
       Primary academic performance fact table for enrolment outcomes and marks.
@@ -213,7 +213,7 @@ models:
           - not_null
           - relationships:
               arguments:
-                to: ref('dim_student')
+                to: ref('DIM_STUDENT')
                 field: student_sk
       - name: course_sk
         description: '{{ doc("he_col_course_sk") }}'
@@ -221,7 +221,7 @@ models:
           - not_null
           - relationships:
               arguments:
-                to: ref('dim_course')
+                to: ref('DIM_COURSE')
                 field: course_sk
       - name: term_sk
         description: '{{ doc("he_col_term_sk") }}'
@@ -229,7 +229,7 @@ models:
           - not_null
           - relationships:
               arguments:
-                to: ref('dim_term')
+                to: ref('DIM_TERM')
                 field: term_sk
       - name: lecturer_id
         description: '{{ doc("he_col_lecturer_id") }}'
@@ -295,7 +295,7 @@ models:
               arguments:
                 expression: '>= 0'
 
-  - name: fct_lms_activity
+  - name: FCT_LMS_ACTIVITY
     description: >
       Periodic snapshot fact at student-course-week grain.
       Captures LMS engagement metrics used for academic engagement analysis.
@@ -311,7 +311,7 @@ models:
           - not_null
           - relationships:
               arguments:
-                to: ref('dim_student')
+                to: ref('DIM_STUDENT')
                 field: student_sk
       - name: course_sk
         description: '{{ doc("he_col_course_sk") }}'
@@ -319,7 +319,7 @@ models:
           - not_null
           - relationships:
               arguments:
-                to: ref('dim_course')
+                to: ref('DIM_COURSE')
                 field: course_sk
       - name: week_start
         description: Beginning date of the weekly LMS activity window.
