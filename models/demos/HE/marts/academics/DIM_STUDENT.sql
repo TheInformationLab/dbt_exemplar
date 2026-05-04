@@ -5,7 +5,7 @@
     config(
         materialized='incremental',
         unique_key='student_sk',
-        incrmental_strategy = 'insert_overwrite'
+        incremental_strategy = 'insert_overwrite'
     )
 }}
 
