@@ -17,16 +17,16 @@ with applications as (
 
 ),
 
-DIM_STUDENT as (
+dim_student as (
 
     -- left join: applicants may not have become students
-    select student_sk, student_id, email from {{ ref('DIM_STUDENT') }}
+    select student_sk, student_id, email from {{ ref('dim_student') }}
 
 ),
 
-DIM_TERM as (
+dim_term as (
 
-    select term_sk, academic_term from {{ ref('DIM_TERM') }}
+    select term_sk, academic_term from {{ ref('dim_term') }}
 
 ),
 
@@ -81,9 +81,9 @@ final as (
         case when a.interview_completed then 1 else 0 end       as interviewed_flag
 
     from applications a
-    left  join DIM_STUDENT d_stu
+    left  join dim_student d_stu
         on a.email = d_stu.email
-    left  join DIM_TERM d_trm
+    left  join dim_term d_trm
         on a.entry_year::varchar || '/24 S1' = d_trm.academic_term  -- approximate join for demo
 
 )

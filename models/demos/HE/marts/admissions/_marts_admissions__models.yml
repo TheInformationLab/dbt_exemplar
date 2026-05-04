@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: FCT_APPLICATIONS
+  - name: fct_applications
     description: >
       Transaction fact at admissions application grain.
       Links applications to student and term dimensions where those joins are
@@ -22,14 +22,14 @@ models:
         data_tests:
           - relationships:
               arguments:
-                to: ref('DIM_STUDENT')
+                to: ref('dim_student')
                 field: student_sk
       - name: term_sk
         description: '{{ doc("he_col_term_sk") }}'
         data_tests:
           - relationships:
               arguments:
-                to: ref('DIM_TERM')
+                to: ref('dim_term')
                 field: term_sk
       - name: full_name
         description: '{{ doc("he_col_full_name") }}'
