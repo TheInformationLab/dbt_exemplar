@@ -8,15 +8,15 @@ with activity as (
 
 ),
 
-dim_student as (
+DIM_STUDENT as (
 
-    select student_sk, student_id from {{ ref('dim_student') }}
+    select student_sk, student_id from {{ ref('DIM_STUDENT') }}
 
 ),
 
-dim_course as (
+DIM_COURSE as (
 
-    select course_sk, course_code from {{ ref('dim_course') }}
+    select course_sk, course_code from {{ ref('DIM_COURSE') }}
 
 ),
 
@@ -57,8 +57,8 @@ final as (
         , 0)                           as engagement_score
 
     from activity a
-    inner join dim_student d_stu on a.student_id  = d_stu.student_id
-    inner join dim_course  d_crs on a.course_code = d_crs.course_code
+    inner join DIM_STUDENT d_stu on a.student_id  = d_stu.student_id
+    inner join DIM_COURSE  d_crs on a.course_code = d_crs.course_code
 
 )
 
