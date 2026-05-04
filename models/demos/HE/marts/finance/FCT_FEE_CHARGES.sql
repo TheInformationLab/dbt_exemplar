@@ -2,6 +2,14 @@
 -- Grain: one row per fee charge event
 -- Kimball type: transaction fact
 -- Domain: finance mart
+{{
+    config(
+        materialized='incremental',
+        unique_key='fee_sk',
+        incrmental_strategy = 'insert_overwrite'
+    )
+}}
+
 
 with fees as (
 

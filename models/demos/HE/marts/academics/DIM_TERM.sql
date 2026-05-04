@@ -1,6 +1,14 @@
 -- Dimension: academic term
 -- Conformed dimension shared across all three mart domains.
 -- Seeded from the distinct terms present in enrolments + fees.
+{{
+    config(
+        materialized='incremental',
+        unique_key='term_sk',
+        incrmental_strategy = 'insert_overwrite'
+    )
+}}
+
 
 with terms_from_enrolments as (
     select distinct academic_term from {{ ref('stg_csv_dump__course_enrolments') }}

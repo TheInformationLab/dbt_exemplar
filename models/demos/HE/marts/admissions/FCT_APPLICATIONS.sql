@@ -2,6 +2,14 @@
 -- Grain: one row per application
 -- Kimball type: transaction fact
 -- Domain: admissions mart
+{{
+    config(
+        materialized='incremental',
+        unique_key='application_sk',
+        incrmental_strategy = 'insert_overwrite'
+    )
+}}
+
 
 with applications as (
 

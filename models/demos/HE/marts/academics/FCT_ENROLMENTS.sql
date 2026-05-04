@@ -1,6 +1,14 @@
 -- Fact: course enrolments
 -- Grain: one row per student-course-term enrolment
 -- Kimball type: transaction fact
+{{
+    config(
+        materialized='incremental',
+        unique_key='enrolment_sk',
+        incrmental_strategy = 'insert_overwrite'
+    )
+}}
+
 
 with spine as (
 

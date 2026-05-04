@@ -1,6 +1,14 @@
 -- Fact: LMS weekly engagement activity
 -- Grain: one row per student-course-week
 -- Kimball type: periodic snapshot fact
+{{
+    config(
+        materialized='incremental',
+        unique_key='lms_activity_sk',
+        incrmental_strategy = 'insert_overwrite'
+    )
+}}
+
 
 with activity as (
 
