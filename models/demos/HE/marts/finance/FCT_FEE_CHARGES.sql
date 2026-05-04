@@ -6,7 +6,7 @@
     config(
         materialized='incremental',
         unique_key='fee_sk',
-        incrmental_strategy = 'insert_overwrite'
+        incremental_strategy = 'insert_overwrite'
     )
 }}
 
