@@ -17,15 +17,15 @@ with fees as (
 
 ),
 
-DIM_STUDENT as (
+dim_student as (
 
-    select student_sk, student_id from {{ ref('DIM_STUDENT') }}
+    select student_sk, student_id from {{ ref('dim_student') }}
 
 ),
 
-DIM_TERM as (
+dim_term as (
 
-    select term_sk, academic_term from {{ ref('DIM_TERM') }}
+    select term_sk, academic_term from {{ ref('dim_term') }}
 
 ),
 
@@ -64,8 +64,8 @@ final as (
         1                                                       as charge_count
 
     from fees f
-    inner join DIM_STUDENT d_stu on f.student_id   = d_stu.student_id
-    inner join DIM_TERM    d_trm on f.academic_term = d_trm.academic_term
+    inner join dim_student d_stu on f.student_id   = d_stu.student_id
+    inner join dim_term    d_trm on f.academic_term = d_trm.academic_term
 
 )
 

@@ -16,21 +16,21 @@ with spine as (
 
 ),
 
-DIM_STUDENT as (
+dim_student as (
 
-    select student_sk, student_id from {{ ref('DIM_STUDENT') }}
-
-),
-
-DIM_COURSE as (
-
-    select course_sk, course_code from {{ ref('DIM_COURSE') }}
+    select student_sk, student_id from {{ ref('dim_student') }}
 
 ),
 
-DIM_TERM as (
+dim_course as (
 
-    select term_sk, academic_term from {{ ref('DIM_TERM') }}
+    select course_sk, course_code from {{ ref('dim_course') }}
+
+),
+
+dim_term as (
+
+    select term_sk, academic_term from {{ ref('dim_term') }}
 
 ),
 
@@ -70,9 +70,9 @@ final as (
         1                                                     as enrolment_count
 
     from spine s
-    inner join DIM_STUDENT  d_stu on s.student_id    = d_stu.student_id
-    inner join DIM_COURSE   d_crs on s.course_code   = d_crs.course_code
-    inner join DIM_TERM     d_trm on s.academic_term = d_trm.academic_term
+    inner join dim_student  d_stu on s.student_id    = d_stu.student_id
+    inner join dim_course   d_crs on s.course_code   = d_crs.course_code
+    inner join dim_term     d_trm on s.academic_term = d_trm.academic_term
 
 )
 
