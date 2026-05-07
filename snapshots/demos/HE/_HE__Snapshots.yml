@@ -1,0 +1,64 @@
+version: 2
+
+snapshots:
+# CSV source snapshots
+  - name: snapshots__course_enrolments
+    relation: source('csv_dump','course_enrolments')
+    description: a snapshot of the course_enrolments source table
+    config: 
+      schema: he_snapshots
+      strategy: check
+      unique_key: enrolment_id
+      check_cols: all
+      dbt_valid_to_current: to_date('9999-12-31')
+
+  - name: snapshots__fee_charges
+    relation: source('csv_dump','fee_charges')
+    description: a snapshot of the fee_charges source table
+    config: 
+      schema: he_snapshots
+      strategy: check
+      unique_key: fee_id
+      check_cols: all
+      dbt_valid_to_current: to_date('9999-12-31')
+
+  - name: snapshots__students
+    relation: source('csv_dump','students')
+    description: a snapshot of the students source table
+    config: 
+      schema: he_snapshots
+      strategy: check
+      unique_key: student_id
+      check_cols: all
+      dbt_valid_to_current: to_date('9999-12-31')
+
+#JSON source snapshots (from staging layer due to parsing)
+  - name: snapshots__lms_events
+    relation: ref('stg_json_dump__lms_events')
+    description: a snapshot of the parsed lms events json
+    config: 
+      schema: he_snapshots
+      strategy: check
+      unique_key: event_id
+      check_cols: all
+      dbt_valid_to_current: to_date('9999-12-31')
+
+  - name: snapshots__applications
+    relation: ref('stg_json_dump__applications')
+    description: a snapshot of the parsed applications json
+    config: 
+      schema: he_snapshots
+      strategy: check
+      unique_key: application_id
+      check_cols: all
+      dbt_valid_to_current: to_date('9999-12-31')
+
+  - name: snapshots__application_qualifications
+    relation: ref('stg_json_dump__application_qualifications')
+    description: a snapshot of the parsed application qualifications json
+    config: 
+      schema: he_snapshots
+      strategy: check
+      unique_key: ['application_id','qualification_seq']
+      check_cols: all
+      dbt_valid_to_current: to_date('9999-12-31')
