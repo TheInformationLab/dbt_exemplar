@@ -12,7 +12,11 @@ with source as (
 , flattened as (
 
     select
-        src.raw_json:application_id::varchar as application_id
+        {{ dbt_utils.generate_surrogate_key([
+            'src.raw_json:application_id::varchar'
+            ,'qual.index::int'
+        ]) }} as application_seq_sk
+        , src.raw_json:application_id::varchar as application_id
         , qual.index::int as qualification_seq
         , qual.value:qualification::varchar as qualification_type
         , qual.value:subject::varchar as subject
