@@ -266,6 +266,10 @@ Derived boolean flag indicating whether the application resulted in an accepted 
 Prior qualifications flattened from the applications JSON array. One row per application × qualification. Standardizes qualification attributes, derives UCAS tariff points, and adds an audit timestamp.
 {% enddocs %}
 
+{% docs he_model_stg_json_dump__application_qualifications_column_application_seq_sk %}
+Surrogate Key combining application id and qualification sequence. Primary Key of Application_Qualifications table.
+{% enddocs %}
+
 {% docs he_model_stg_json_dump__application_qualifications_column_application_id %}
 Identifier of the parent application associated with the qualification.
 {% enddocs %}

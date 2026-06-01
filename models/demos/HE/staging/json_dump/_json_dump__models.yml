@@ -116,6 +116,13 @@ models:
   - name: stg_json_dump__application_qualifications
     description: '{{ doc("he_model_stg_json_dump__application_qualifications") }}'
     columns:
+      - name: application_seq_sk
+        description: '{{ doc("he_model_stg_json_dump__application_qualifications_column_application_seq_sk") }}' 
+        data_tests:
+          - unique
+          - not_null
+        
+
       - name: application_id
         description: '{{ doc("he_model_stg_json_dump__application_qualifications_column_application_id") }}'
         data_tests:
