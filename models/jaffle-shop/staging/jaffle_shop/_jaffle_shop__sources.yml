@@ -15,6 +15,7 @@ sources:
       - name: raw_items
         description: Items included in an order
       - name: raw_stores
+        description: One record per store location with id and tax rate
         config:
           loaded_at_field: opened_at
       - name: raw_products

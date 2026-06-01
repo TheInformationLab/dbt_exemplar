@@ -2,8 +2,13 @@ version: 2
 
 models:
   - name: metricflow_time_spine
+    description: A Time Spine generating every day for the last 10 years for metric calculation
     time_spine:
       standard_granularity_column: date_day # column for the standard grain of your table
     columns:
       - name: date_day
         granularity: day
+        data_tests:
+        - unique
+        - not_null
+        
