@@ -161,12 +161,14 @@ metrics:
           alias: cost
 
   #Cumulative Metrics
-  - name: cumulative_revenue
-    description: The cumulative revenue for all orders.
-    label: Cumulative Revenue (All Time)
-    type: cumulative
-    type_params:
-      measure: revenue
+
+  # ------- Commented out 2026-06-01 due to OSI and dbt semantic drift. ----------
+  # - name: cumulative_revenue
+  #   description: The cumulative revenue for all orders.
+  #   label: Cumulative Revenue (All Time)
+  #   type: cumulative
+  #   type_params:
+  #     measure: revenue
 
   - name: order_total
     description: Sum of total order amonunt. Includes tax + revenue.
