@@ -7,65 +7,66 @@ with source as (
 
     select raw_json from {{ source('json_dump', 'applications_raw') }}
 
-),
+)
 
-parsed as (
+, parsed as (
 
     select
         -- keys
-        raw_json:application_id::varchar                    as application_id,
+        raw_json:application_id::varchar as application_id
 
         -- applicant identity
-        raw_json:applicant:first_name::varchar              as first_name,
-        raw_json:applicant:last_name::varchar               as last_name,
-        raw_json:applicant:first_name::varchar
-            || ' ' || raw_json:applicant:last_name::varchar as full_name,
-        raw_json:applicant:date_of_birth::date              as date_of_birth,
-        raw_json:applicant:gender::varchar                  as gender,
-        raw_json:applicant:nationality::varchar             as nationality,
-        raw_json:applicant:ethnicity::varchar               as ethnicity,
-        raw_json:applicant:home_county::varchar             as home_county,
+        , raw_json:applicant:first_name::varchar as first_name
+        , raw_json:applicant:last_name::varchar as last_name
+        , raw_json:applicant:date_of_birth::date as date_of_birth
+        , raw_json:applicant:gender::varchar as gender
+        , raw_json:applicant:nationality::varchar as nationality
+        , raw_json:applicant:ethnicity::varchar as ethnicity
+        , raw_json:applicant:home_county::varchar as home_county
+        , raw_json:applicant:contact:email::varchar as email
 
         -- contact
-        raw_json:applicant:contact:email::varchar           as email,
-        raw_json:applicant:contact:phone::varchar           as phone,
+        , raw_json:applicant:contact:phone::varchar as phone
+        , raw_json:programme:programme_name::varchar as programme_name
 
         -- programme applied for
-        raw_json:programme:programme_name::varchar          as programme_name,
-        raw_json:programme:programme_code::varchar          as programme_code,
-        raw_json:programme:school::varchar                  as school,
-        raw_json:programme:entry_year::int                  as entry_year,
+        , raw_json:programme:programme_code::varchar as programme_code
+        , raw_json:programme:school::varchar as school
+        , raw_json:programme:entry_year::int as entry_year
+        , raw_json:application_source::varchar as application_source
 
         -- application metadata
-        raw_json:application_source::varchar                as application_source,
-        raw_json:application_date::date                     as application_date,
-        raw_json:ucas_points::int                           as ucas_points,
+        , raw_json:application_date::date as application_date
+        , raw_json:ucas_points::int as ucas_points
+        , raw_json:interview_completed::boolean as interview_completed
 
         -- interview
-        raw_json:interview_completed::boolean               as interview_completed,
-        raw_json:interview_score::float                     as interview_score,
+        , raw_json:interview_score::float as interview_score
+        , raw_json:outcome::varchar as outcome
 
         -- outcome
-        raw_json:outcome::varchar                           as outcome,
-        raw_json:outcome_date::date                         as outcome_date,
+        , raw_json:outcome_date::date as outcome_date
+        , raw_json:personal_statement_word_count::int
+            as personal_statement_word_count
 
         -- other
-        raw_json:personal_statement_word_count::int         as personal_statement_word_count,
-        raw_json:disability_disclosure::varchar             as disability_disclosure,
+        , raw_json:disability_disclosure::varchar as disability_disclosure
+        , raw_json:applicant:first_name::varchar
+        || ' ' || raw_json:applicant:last_name::varchar as full_name
 
         -- derived
-        case
-            when raw_json:nationality::varchar ilike '%International%' then 'International'
+        , case
+            when
+                raw_json:nationality::varchar ilike '%International%'
+                then 'International'
             else 'Home'
-        end                                                 as fee_status,
+        end as fee_status
 
-        case
-            when raw_json:outcome::varchar = 'Offer Accepted' then true
-            else false
-        end                                                 as is_converted,
+        , coalesce (raw_json:outcome::varchar = 'Offer Accepted'
+        , false) as is_converted
 
         -- audit
-        current_timestamp()                                 as _loaded_at
+        , current_timestamp() as _loaded_at
 
     from source
 

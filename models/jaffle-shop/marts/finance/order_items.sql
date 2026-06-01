@@ -4,53 +4,53 @@ order_items as (
 
     select * from {{ ref('stg_jaffle_shop__order_items') }}
 
-),
+)
 
 
-orders as (
+, orders as (
 
     select * from {{ ref('stg_jaffle_shop__orders') }}
 
-),
+)
 
-products as (
+, products as (
 
     select * from {{ ref('stg_jaffle_shop__products') }}
 
-),
+)
 
-supplies as (
+, supplies as (
 
     select * from {{ ref('stg_jaffle_shop__supplies') }}
 
-),
+)
 
-order_supplies_summary as (
+, order_supplies_summary as (
 
     select
-        product_id,
+        product_id
 
-        sum(supply_cost) as supply_cost
+        , sum(supply_cost) as supply_cost
 
     from supplies
 
     group by 1
 
-),
+)
 
-joined as (
+, joined as (
 
     select
-        order_items.*,
+        order_items.*
 
-        orders.ordered_at,
+        , orders.ordered_at
 
-        products.product_name,
-        products.product_price,
-        products.is_food_item,
-        products.is_drink_item,
+        , products.product_name
+        , products.product_price
+        , products.is_food_item
+        , products.is_drink_item
 
-        order_supplies_summary.supply_cost
+        , order_supplies_summary.supply_cost
 
     from order_items
 

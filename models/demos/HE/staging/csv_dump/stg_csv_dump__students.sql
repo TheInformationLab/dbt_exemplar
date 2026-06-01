@@ -6,47 +6,47 @@ with source as (
 
     select * from {{ source('csv_dump', 'students') }}
 
-),
+)
 
-renamed as (
+, renamed as (
 
     select
         -- keys
-        student_id,
-        personal_tutor_id,
+        student_id
+        , personal_tutor_id
 
         -- identity
-        first_name,
-        last_name,
-        first_name || ' ' || last_name   as full_name,
-        to_date(date_of_birth,'DD/MM/YYYY')::date              as date_of_birth,
-        email,
+        , first_name
+        , last_name
+        , to_date(date_of_birth, 'DD/MM/YYYY')::date as date_of_birth
+        , email
+        , gender
 
         -- demographics
-        gender,
-        nationality,
-        ethnicity,
-        home_county,
+        , nationality
+        , ethnicity
+        , home_county
+        , programme_name
 
         -- programme
-        programme_name,
-        programme_code,
-        school,
+        , programme_code
+        , school
+        , entry_year::int as entry_year
 
         -- study
-        entry_year::int                  as entry_year,
-        current_year_of_study::int       as current_year_of_study,
-        enrolment_status,
-        ucas_points::int                 as ucas_points,
+        , current_year_of_study::int as current_year_of_study
+        , enrolment_status
+        , ucas_points::int as ucas_points
+        , first_name || ' ' || last_name as full_name
 
         -- meta
-        case
+        , case
             when nationality ilike '%International%' then 'International'
             else 'Home'
-        end                              as fee_status,
+        end as fee_status
 
         -- audit
-        current_timestamp()              as _loaded_at
+        , current_timestamp() as _loaded_at
 
     from source
 
