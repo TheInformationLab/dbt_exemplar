@@ -2,6 +2,10 @@
 Raw Higher Education data landed from S3 into Snowflake. JSON files are loaded into a VARIANT column and parsed in staging.
 {% enddocs %}
 
+{% docs he_col__loaded_at %}
+No Timezone Timestamp on when each row was loaded into snowflake
+{% enddocs %}
+
 {% docs he_source_json_dump_table_applications_raw %}
 Raw admissions applications loaded from applications.json into a single VARIANT column for semi-structured parsing in staging.
 {% enddocs %}
