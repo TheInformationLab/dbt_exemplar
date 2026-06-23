@@ -85,6 +85,10 @@ models:
         description: '{{ doc("he_model_stg_csv_dump__course_enrolments_column_numeric_mark") }}'
       - name: is_pass
         description: '{{ doc("he_model_stg_csv_dump__course_enrolments_column_is_pass") }}'
+      - name: enrol_loaded_at
+        description: '{{ doc("he_col__loaded_at")}} for enrolment data'
+        data_tests:
+          - not_null
       - name: full_name
         description: '{{ doc("he_col_full_name") }}'
         data_tests:
@@ -146,6 +150,10 @@ models:
           - dbt_utils.expression_is_true:
               arguments:
                 expression: '>= 0'
+      - name: student_loaded_at
+        description: '{{ doc("he_col__loaded_at")}} for student data'
+        data_tests:
+          - not_null
 
   - name: int_student_lms_activity
     description: >
@@ -243,3 +251,7 @@ models:
           - dbt_utils.expression_is_true:
               arguments:
                 expression: '>= 0'
+      - name: _loaded_at
+        description: 'Maximum {{ doc("he_col__loaded_at")}} per student/course code/week start combo'
+        data_tests:
+          - not_null

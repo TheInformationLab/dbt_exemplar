@@ -33,6 +33,7 @@ with events as (
         -- device split
         , count_if(device_type = 'Mobile') as mobile_events
         , count_if(device_type = 'Desktop') as desktop_events
+        , max(_loaded_at) as _loaded_at
 
     from events
     group by 1, 2, 3
