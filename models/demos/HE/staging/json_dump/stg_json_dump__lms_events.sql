@@ -4,7 +4,7 @@
 
 with source as (
 
-    select raw_json from {{ source('json_dump', 'lms_events_raw') }}
+    select raw_json, __loaded_at from {{ source('json_dump', 'lms_events_raw') }}
 
 )
 
@@ -41,7 +41,7 @@ with source as (
         , coalesce(raw_json:event_type::varchar='login', false) as is_login_event
 
         -- audit
-        , current_timestamp() as _loaded_at
+        , __loaded_at as _loaded_at
 
     from source
 

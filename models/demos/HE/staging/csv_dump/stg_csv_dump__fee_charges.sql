@@ -1,7 +1,6 @@
 -- Staging: fee charges
 -- Source: fee_charges.csv → HE_DEMO.RAW.FEE_CHARGES
 -- Grain: one row per charge event
-
 with source as (
 
     select * from {{ source('csv_dump', 'fee_charges') }}
@@ -42,10 +41,11 @@ with source as (
         end as payment_status
 
         -- audit
-        , current_timestamp() as _loaded_at
+        , __loaded_at as _loaded_at
 
     from source
 
 )
 
 select * from renamed
+

@@ -25,6 +25,7 @@ vars:
 seeds:
 
 models:
+  +transient: false
   dbt_exemplar:
     demos:
       HE:

@@ -53,10 +53,11 @@ with source as (
         end as grade_band
 
         -- audit
-        , current_timestamp() as _loaded_at
+        , __loaded_at as _loaded_at
 
     from source
 
 )
 
 select * from renamed
+
