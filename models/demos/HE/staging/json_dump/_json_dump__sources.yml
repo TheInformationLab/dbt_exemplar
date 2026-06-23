@@ -13,6 +13,7 @@ sources:
         error_after: 
           count: 90
           period: day
+        loaded_at_field: __loaded_at
 
 
     tables:
@@ -23,11 +24,19 @@ sources:
             description: '{{ doc("he_col_raw_application_json") }}'
             data_tests:
               - not_null
+          - name: __loaded_at
+            description: '{{ doc("he_col__loaded_at")}}'
+            data_tests:
+              - not_null
 
       - name: lms_events_raw
         description: '{{ doc("he_source_json_dump_table_lms_events_raw") }}'
         columns:
           - name: raw_json
             description: '{{ doc("he_col_raw_lms_event_json") }}'
+            data_tests:
+              - not_null
+          - name: __loaded_at
+            description: '{{ doc("he_col__loaded_at")}}'
             data_tests:
               - not_null
