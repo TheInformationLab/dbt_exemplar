@@ -100,3 +100,8 @@ models:
         description: '{{ doc("he_measure_charge_count") }}'
         data_tests:
           - not_null
+      - name: _loaded_at
+        description: '{{ doc("he_col__loaded_at")}}'
+        data_tests:
+          - not_null
+          
