@@ -294,6 +294,10 @@ models:
           - dbt_utils.expression_is_true:
               arguments:
                 expression: '>= 0'
+      - name: _loaded_at
+        description: '{{ doc("he_col__loaded_at")}}'
+        data_tests:
+          - not_null
 
   - name: fct_lms_activity
     description: >
@@ -402,3 +406,7 @@ models:
           - dbt_utils.expression_is_true:
               arguments:
                 expression: '>= 0'
+      - name: _loaded_at
+        description: '{{ doc("he_col__loaded_at")}}'
+        data_tests:
+          - not_null

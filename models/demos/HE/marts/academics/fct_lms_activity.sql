@@ -5,7 +5,7 @@
     config(
         materialized='incremental',
         unique_key='lms_activity_sk',
-        incremental_strategy = 'insert_overwrite'
+        incremental_strategy = 'merge'
     )
 }}
 
@@ -13,6 +13,10 @@
 with activity as (
 
     select * from {{ ref('int_student_lms_activity') }}
+    {% if is_incremental() %}
+        -- this filter will only be applied on an incremental run
+        where _loaded_at > (select max(_loaded_at) from {{ this }}) 
+    {% endif %}
 
 )
 
@@ -73,6 +77,7 @@ with activity as (
             + (a.forum_posts * 4)
             , 0
         ) as engagement_score
+        , a._loaded_at
 
     from activity as a
     inner join dim_student as d_stu on a.student_id = d_stu.student_id

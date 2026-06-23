@@ -6,7 +6,7 @@
     config(
         materialized='incremental',
         unique_key='fee_sk',
-        incremental_strategy = 'insert_overwrite'
+        incremental_strategy = 'merge'
     )
 }}
 
@@ -68,6 +68,7 @@ with fees as (
         , case when f.waiver_applied then 1 else 0 end as waiver_flag
         , case when f.payment_status = 'Unpaid' then 1 else 0 end as unpaid_flag
         , 1 as charge_count
+        , greatest(f._loaded_at, d_stu._loaded_at, d_trm._loaded_at) as _loaded_at
 
     from fees as f
     inner join dim_student as d_stu on f.student_id = d_stu.student_id
@@ -76,3 +77,7 @@ with fees as (
 )
 
 select * from final
+{% if is_incremental() %}
+    -- this filter will only be applied on an incremental run
+    where _loaded_at > (select max(_loaded_at) from {{ this }}) 
+{% endif %}
