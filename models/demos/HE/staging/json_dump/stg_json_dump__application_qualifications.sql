@@ -5,7 +5,7 @@
 
 with source as (
 
-    select raw_json from {{ source('json_dump', 'applications_raw') }}
+    select raw_json, __loaded_at from {{ source('json_dump', 'applications_raw') }}
 
 )
 
@@ -33,7 +33,7 @@ with source as (
             else 0
         end as ucas_points
 
-        , current_timestamp() as _loaded_at
+        , __loaded_at as _loaded_at
 
     from source as src
     , lateral flatten(

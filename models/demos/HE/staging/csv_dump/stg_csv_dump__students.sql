@@ -1,7 +1,6 @@
 -- Staging: students
 -- Source: students.csv → HE_DEMO.RAW.STUDENTS
 -- Grain: one row per student
-
 with source as (
 
     select * from {{ source('csv_dump', 'students') }}
@@ -45,8 +44,7 @@ with source as (
             else 'Home'
         end as fee_status
 
-        -- audit
-        , current_timestamp() as _loaded_at
+        , __loaded_at as _loaded_at
 
     from source
 

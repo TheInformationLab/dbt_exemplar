@@ -5,14 +5,21 @@
     config(
         materialized='incremental',
         unique_key='enrolment_sk',
-        incremental_strategy = 'insert_overwrite'
+        incremental_strategy = 'merge'
     )
 }}
 
 
 with spine as (
 
-    select * from {{ ref('int_student_enrolment_spine') }}
+    select 
+    * 
+    , greatest(enrol_loaded_at,student_loaded_at) as _loaded_at
+    from {{ ref('int_student_enrolment_spine') }}
+    {% if is_incremental() %}
+        -- this filter will only be applied on an incremental run
+        where _loaded_at > (select max(_loaded_at) from {{ this }}) 
+    {% endif %}
 
 )
 
@@ -80,6 +87,7 @@ with spine as (
         , case when s.grade = 'F' then 1 else 0 end as failed_flag
         , case when s.grade = 'Withdrawn' then 1 else 0 end as withdrawn_flag
         , 1 as enrolment_count
+        , s._loaded_at
 
     from spine as s
     inner join dim_student as d_stu on s.student_id = d_stu.student_id

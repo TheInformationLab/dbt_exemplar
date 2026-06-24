@@ -5,7 +5,8 @@
     config(
         materialized='incremental',
         unique_key='course_sk',
-        incremental_strategy = 'insert_overwrite'
+        incremental_strategy = 'insert_overwrite',
+        on_schema_change='append_new_columns'
     )
 }}
 
@@ -52,6 +53,8 @@ with enrolments as (
         , school
         , course_year_level
         , 'Undergraduate' as level_of_study   -- extend for PG demo
+        -- , Case when course_name = 'Databases' THEN 'Postgraduate' ELSE 'Undergraduate' END as level_of_study
+        
     from courses
 
 )

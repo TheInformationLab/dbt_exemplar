@@ -13,6 +13,7 @@ sources:
         error_after: 
           count: 90
           period: day
+        loaded_at_field: __loaded_at
         
 
     tables:
@@ -93,6 +94,11 @@ sources:
             description: '{{ doc("he_col_personal_tutor_id") }}'
             data_tests:
               - not_null
+          - name: __loaded_at
+            description: '{{ doc("he_col__loaded_at")}}'
+            data_tests:
+              - not_null
+              
 
       - name: course_enrolments
         description: '{{ doc("he_source_csv_dump_table_course_enrolments") }}'
@@ -150,6 +156,10 @@ sources:
             description: '{{ doc("he_col_enrolment_date") }}'
             data_tests:
               - not_null
+          - name: __loaded_at
+            description: '{{ doc("he_col__loaded_at")}}'
+            data_tests:
+              - not_null
 
       - name: fee_charges
         description: '{{ doc("he_source_csv_dump_table_fee_charges") }}'
@@ -195,3 +205,7 @@ sources:
               - accepted_values:
                   arguments:
                     values: ["GBP"]
+          - name: __loaded_at
+            description: '{{ doc("he_col__loaded_at")}}'
+            data_tests:
+              - not_null

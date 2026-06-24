@@ -1,0 +1,48 @@
+saved_queries:
+  - name: customer_order_metrics
+    description: Customer-level order metrics grouped by customer entity and customer name.
+    label: Customer Order Metrics
+    query_params:
+      metrics:
+        - count_lifetime_orders
+        - lifetime_spend_pretax
+        - average_order_value
+      group_by:
+        - Entity('customer')
+        - Dimension('customer__customer_name')
+    exports:
+      - name: customer_order_metrics
+        config:
+          export_as: table
+
+  - name: revenue_metrics
+    description: Daily revenue metrics across total, food, and drink revenue.
+    label: Revenue Metrics
+    query_params:
+      metrics:
+        - revenue
+        - food_revenue
+        - drink_revenue
+      group_by:
+        - TimeDimension('metric_time', 'day')
+    exports:
+      - name: revenue_metrics
+        config:
+          export_as: table
+
+  - name: order_metrics
+    description: Daily order volume and order mix metrics.
+    label: Order Metrics
+    query_params:
+      metrics:
+        - orders
+        - new_customer_orders
+        - order_total
+        - food_orders
+        - drink_orders
+      group_by:
+        - TimeDimension('metric_time', 'day')
+    exports:
+      - name: order_metrics
+        config:
+          export_as: table

@@ -38,6 +38,7 @@ with students as (
         , e.grade_band
         , e.numeric_mark
         , e.is_pass
+        , e._loaded_at as enrol_loaded_at
 
         -- student attributes (at point of reporting)
         , s.full_name
@@ -53,6 +54,7 @@ with students as (
         , s.ethnicity
         , s.home_county
         , s.ucas_points
+        , s._loaded_at as student_loaded_at
 
     from enrolments as e
     inner join students as s on e.student_id = s.student_id

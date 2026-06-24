@@ -90,6 +90,9 @@ models:
                 values: ["Home", "International"]
       - name: _loaded_at
         description: '{{ doc("he_col__loaded_at") }}'
+        data_tests:
+          - not_null
+          
 
   - name: stg_csv_dump__course_enrolments
     description: '{{ doc("he_model_stg_csv_dump__course_enrolments") }}'
@@ -170,6 +173,8 @@ models:
                 values: ["Distinction", "Merit", "Pass", "Near Pass", "Fail", "In Progress", "Withdrawn"]
       - name: _loaded_at
         description: '{{ doc("he_col__loaded_at") }}'
+        data_tests:
+          - not_null
 
   - name: stg_csv_dump__fee_charges
     description: '{{ doc("he_model_stg_csv_dump__fee_charges") }}'
@@ -246,3 +251,5 @@ models:
                 values: ["Fully Paid", "Partially Paid", "Unpaid"]
       - name: _loaded_at
         description: '{{ doc("he_col__loaded_at") }}'
+        data_tests:
+          - not_null

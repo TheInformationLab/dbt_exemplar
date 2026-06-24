@@ -6,7 +6,7 @@
     config(
         materialized='incremental',
         unique_key='application_sk',
-        incremental_strategy = 'insert_overwrite'
+        incremental_strategy = 'merge'
     )
 }}
 
@@ -14,6 +14,10 @@
 with applications as (
 
     select * from {{ ref('stg_json_dump__applications') }}
+    {% if is_incremental() %}
+        -- this filter will only be applied on an incremental run
+        where _loaded_at > (select max(_loaded_at) from {{ this }}) 
+    {% endif %}
 
 )
 
@@ -90,6 +94,7 @@ with applications as (
         , case when a.outcome = 'Rejected' then 1 else 0 end as rejected_flag
         , case when a.outcome = 'Offer Declined' then 1 else 0 end as declined_flag
         , case when a.interview_completed then 1 else 0 end as interviewed_flag
+        , a._loaded_at
 
     from applications as a
     left join dim_student as d_stu

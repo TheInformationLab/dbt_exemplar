@@ -5,88 +5,130 @@ models:
     description: >
       Conformed student dimension. One row per student.
       Connects to academic, admissions, and finance facts via student keys.
+    semantic_model:
+      enabled: true
+      name: dim_student
+
     columns:
       - name: student_sk
         description: '{{ doc("he_col_student_sk") }}'
         data_tests:
           - unique
           - not_null
+        entity:
+          type: primary
+          name: student
       - name: student_id
         description: '{{ doc("he_col_student_id_pk") }}'
         data_tests:
           - unique
           - not_null
+        dimension:
+          type: categorical
       - name: full_name
         description: '{{ doc("he_col_full_name") }}'
         data_tests:
           - not_null
+        dimension:
+          type: categorical
       - name: first_name
         description: '{{ doc("he_col_first_name") }}'
         data_tests:
           - not_null
+        dimension:
+          type: categorical
       - name: last_name
         description: '{{ doc("he_col_last_name") }}'
         data_tests:
           - not_null
+        dimension:
+          type: categorical
       - name: date_of_birth
         description: '{{ doc("he_col_date_of_birth") }}'
         data_tests:
           - not_null
+        dimension:
+          type: time
+        granularity: day
       - name: email
         description: '{{ doc("he_col_email") }}'
         data_tests:
           - unique
           - not_null
+        dimension:
+          type: categorical
       - name: gender
         description: '{{ doc("he_col_gender") }}'
         data_tests:
           - accepted_values:
               arguments:
                 values: ["Female", "Male", "Non-binary", "Prefer not to say"]
+        dimension:
+          type: categorical
       - name: nationality
         description: '{{ doc("he_col_nationality") }}'
         data_tests:
           - not_null
+        dimension:
+          type: categorical
       - name: ethnicity
         description: '{{ doc("he_col_ethnicity") }}'
         data_tests:
           - not_null
+        dimension:
+          type: categorical
       - name: home_county
         description: '{{ doc("he_col_home_county") }}'
         data_tests:
           - not_null
+        dimension:
+          type: categorical
       - name: fee_status
         description: '{{ doc("he_model_column_fee_status") }}'
         data_tests:
           - accepted_values:
               arguments:
                 values: ["Home", "International"]
+        dimension:
+          type: categorical
       - name: programme_name
         description: '{{ doc("he_col_programme_name") }}'
         data_tests:
           - not_null
+        dimension:
+          type: categorical
       - name: programme_code
         description: '{{ doc("he_col_programme_code") }}'
         data_tests:
           - not_null
+        dimension:
+          type: categorical
       - name: school
         description: '{{ doc("he_col_school") }}'
         data_tests:
           - not_null
+        dimension:
+          type: categorical
       - name: entry_year
         description: '{{ doc("he_col_entry_year") }}'
         data_tests:
           - not_null
+        dimension:
+          type: categorical
       - name: current_year_of_study
         description: '{{ doc("he_col_current_year_of_study") }}'
         data_tests:
           - not_null
+        dimension:
+          type: categorical
       - name: enrolment_status
         description: '{{ doc("he_col_enrolment_status") }}'
         data_tests:
           - accepted_values:
               arguments:
                 values: ["Active", "Interrupted", "Withdrawn", "Graduated"]
+        dimension:
+          type: categorical
       - name: ucas_points
         description: '{{ doc("he_col_ucas_points") }}'
         data_tests:
@@ -97,76 +139,124 @@ models:
           - accepted_values:
               arguments:
                 values: ["AAA+", "BBB–AAB", "CCC–BBC", "Below CCC"]
+        dimension:
+          type: categorical
       - name: personal_tutor_id
         description: '{{ doc("he_col_personal_tutor_id") }}'
         data_tests:
           - not_null
+        dimension:
+          type: categorical
 
   - name: dim_course
     description: >
       Conformed course dimension. One row per course code.
       Derived from staged course enrolments for shared reporting use.
+    semantic_model:
+      enabled: true
+      name: dim_course
+
+    config:
+      contract:
+        enforced: true
     columns:
       - name: course_sk
         description: '{{ doc("he_col_course_sk") }}'
+        data_type: varchar
         data_tests:
           - unique
           - not_null
+        entity:
+          type: primary
+          name: course
       - name: course_code
         description: '{{ doc("he_col_course_code") }}'
+        data_type: varchar
         data_tests:
           - unique
           - not_null
+        dimension:
+          type: categorical
       - name: course_name
         description: '{{ doc("he_col_course_name") }}'
+        data_type: varchar
         data_tests:
           - not_null
+        dimension:
+          type: categorical
       - name: programme_code
         description: '{{ doc("he_col_programme_code") }}'
+        data_type: varchar
         data_tests:
           - not_null
+        dimension:
+          type: categorical
       - name: school
         description: '{{ doc("he_col_school") }}'
+        data_type: varchar
         data_tests:
           - not_null
+        dimension:
+          type: categorical
       - name: course_year_level
         description: '{{ doc("he_col_course_year_level") }}'
+        data_type: integer
         data_tests:
           - not_null
+        dimension:
+          type: categorical
       - name: level_of_study
         description: '{{ doc("he_col_level_of_study") }}'
+        data_type: varchar
         data_tests:
           - accepted_values:
               arguments:
-                values: ["Undergraduate"]
+                values: ["Undergraduate", "Postgraduate"]
+        dimension:
+          type: categorical
 
   - name: dim_term
     description: >
       Conformed academic term dimension. One row per academic term.
       Shared across academic, admissions, and finance marts.
+    semantic_model:
+      enabled: true
+      name: dim_term
+
     columns:
       - name: term_sk
         description: '{{ doc("he_col_term_sk") }}'
         data_tests:
           - unique
           - not_null
+        entity:
+          type: primary
+          name: term
       - name: academic_term
         description: '{{ doc("he_col_academic_term") }}'
         data_tests:
           - unique
           - not_null
+        dimension:
+          type: categorical
       - name: academic_year_start
         description: '{{ doc("he_col_academic_year_start") }}'
         data_tests:
           - not_null
+        dimension:
+          type: categorical
       - name: academic_year_end
         description: '{{ doc("he_col_academic_year_end") }}'
         data_tests:
           - not_null
+        dimension:
+          type: categorical
       - name: academic_year_label
         description: '{{ doc("he_col_academic_year_label") }}'
         data_tests:
           - not_null
+        dimension:
+          type: categorical
       - name: semester_number
         description: '{{ doc("he_col_semester_number") }}'
         data_tests:
@@ -174,16 +264,22 @@ models:
               arguments:
                 values: [1, 2]
                 quote: false
+        dimension:
+          type: categorical
       - name: semester_name
         description: '{{ doc("he_col_semester_name") }}'
         data_tests:
           - accepted_values:
               arguments:
                 values: ["Autumn/Winter", "Spring/Summer"]
+        dimension:
+          type: categorical
       - name: term_start_year
         description: '{{ doc("he_col_term_start_year") }}'
         data_tests:
           - not_null
+        dimension:
+          type: categorical
       - name: term_start_month
         description: '{{ doc("he_col_term_start_month") }}'
         data_tests:
@@ -191,17 +287,27 @@ models:
               arguments:
                 values: [9, 1]
                 quote: false
+        dimension:
+          type: categorical
 
   - name: fct_enrolments
     description: >
       Transaction fact at student-course-term enrolment grain.
       Primary academic performance fact table for enrolment outcomes and marks.
+    semantic_model:
+      enabled: true
+      name: fct_enrolments
+    agg_time_dimension: enrolment_date
+
     columns:
       - name: enrolment_sk
         description: '{{ doc("he_col_enrolment_sk") }}'
         data_tests:
           - unique
           - not_null
+        entity:
+          type: primary
+          name: enrolment
       - name: enrolment_id
         description: '{{ doc("he_col_enrolment_id") }}'
         data_tests:
@@ -215,6 +321,9 @@ models:
               arguments:
                 to: ref('dim_student')
                 field: student_sk
+        entity:
+          type: foreign
+          name: student
       - name: course_sk
         description: '{{ doc("he_col_course_sk") }}'
         data_tests:
@@ -223,6 +332,9 @@ models:
               arguments:
                 to: ref('dim_course')
                 field: course_sk
+        entity:
+          type: foreign
+          name: course
       - name: term_sk
         description: '{{ doc("he_col_term_sk") }}'
         data_tests:
@@ -231,20 +343,30 @@ models:
               arguments:
                 to: ref('dim_term')
                 field: term_sk
+        entity:
+          type: foreign
+          name: term
       - name: lecturer_id
         description: '{{ doc("he_col_lecturer_id") }}'
         data_tests:
           - not_null
+        dimension:
+          type: categorical
       - name: delivery_mode
         description: '{{ doc("he_col_delivery_mode") }}'
         data_tests:
           - accepted_values:
               arguments:
                 values: ["In Person", "Hybrid", "Online"]
+        dimension:
+          type: categorical
       - name: enrolment_date
         description: '{{ doc("he_col_enrolment_date") }}'
         data_tests:
           - not_null
+        dimension:
+          type: time
+        granularity: day
       - name: credits
         description: '{{ doc("he_col_credits") }}'
         data_tests:
@@ -260,12 +382,16 @@ models:
           - accepted_values:
               arguments:
                 values: ["A*", "A", "B", "C", "D", "F", "In Progress", "Withdrawn"]
+        dimension:
+          type: categorical
       - name: grade_band
         description: '{{ doc("he_model_stg_csv_dump__course_enrolments_column_grade_band") }}'
         data_tests:
           - accepted_values:
               arguments:
                 values: ["Distinction", "Merit", "Pass", "Near Pass", "Fail", "In Progress", "Withdrawn"]
+        dimension:
+          type: categorical
       - name: passed_flag
         description: '{{ doc("he_measure_passed_flag") }}'
         data_tests:
@@ -294,17 +420,121 @@ models:
           - dbt_utils.expression_is_true:
               arguments:
                 expression: '>= 0'
+      - name: _loaded_at
+        description: '{{ doc("he_col__loaded_at")}}'
+        data_tests:
+          - not_null
+    metrics:
+      - name: enrolments
+        description: Count of enrolment records.
+        type: simple
+        label: Enrolments
+        agg: sum
+        expr: enrolment_count
+      - name: enrolled_credits
+        description: Total enrolled credits.
+        type: simple
+        label: Enrolled Credits
+        agg: sum
+        expr: credits
+      - name: average_numeric_mark
+        description: Average numeric mark across enrolments.
+        type: simple
+        label: Average Numeric Mark
+        agg: average
+        expr: numeric_mark
+      - name: pass_count
+        description: Count of passed enrolments.
+        type: simple
+        label: Pass Count
+        agg: sum
+        expr: passed_flag
+      - name: fail_count
+        description: Count of failed enrolments.
+        type: simple
+        label: Fail Count
+        agg: sum
+        expr: failed_flag
+      - name: withdrawn_enrolments
+        description: Count of withdrawn enrolments.
+        type: simple
+        label: Withdrawn Enrolments
+        agg: sum
+        expr: withdrawn_flag
+      - name: pass_rate
+        description: Share of enrolments that passed.
+        type: ratio
+        label: Pass Rate
+        numerator: pass_count
+        denominator: enrolments
+      - name: fail_rate
+        description: Share of enrolments that failed.
+        type: ratio
+        label: Fail Rate
+        numerator: fail_count
+        denominator: enrolments
+      - name: withdrawal_rate
+        description: Share of enrolments that were withdrawn.
+        type: ratio
+        label: Withdrawal Rate
+        numerator: withdrawn_enrolments
+        denominator: enrolments
+      - name: successful_enrolments
+        description: Count of completed enrolment attempts, defined as passes plus fails and excluding withdrawals or in-progress records.
+        type: derived
+        label: Successful Enrolments
+        expr: passes + fails
+        input_metrics:
+          - name: pass_count
+            alias: passes
+          - name: fail_count
+            alias: fails
+      - name: completed_attempt_rate
+        description: Share of enrolments that reached a completed outcome, defined as pass or fail rather than withdrawn or in progress.
+        type: ratio
+        label: Completed Attempt Rate
+        numerator: successful_enrolments
+        denominator: enrolments
+
+      - name: enrolments_mtd
+
+        description: Month-to-date enrolments.
+        type: cumulative
+        label: Enrolments MTD
+        input_metric: enrolments
+        grain_to_date: month
+      - name: enrolled_credits_rolling_90d
+        description: Trailing 90-day enrolled credits.
+        type: cumulative
+        label: Enrolled Credits Rolling 90D
+        input_metric: enrolled_credits
+        window: 90 days
+      - name: pass_count_rolling_90d
+        description: Trailing 90-day passed enrolments.
+        type: cumulative
+        label: Pass Count Rolling 90D
+        input_metric: pass_count
+        window: 90 days
+
 
   - name: fct_lms_activity
     description: >
       Periodic snapshot fact at student-course-week grain.
       Captures LMS engagement metrics used for academic engagement analysis.
+    semantic_model:
+      enabled: true
+      name: fct_lms_activity
+    agg_time_dimension: week_start
+
     columns:
       - name: lms_activity_sk
         description: '{{ doc("he_col_lms_activity_sk") }}'
         data_tests:
           - unique
           - not_null
+        entity:
+          type: primary
+          name: lms_activity
       - name: student_sk
         description: '{{ doc("he_col_student_sk") }}'
         data_tests:
@@ -313,6 +543,9 @@ models:
               arguments:
                 to: ref('dim_student')
                 field: student_sk
+        entity:
+          type: foreign
+          name: student
       - name: course_sk
         description: '{{ doc("he_col_course_sk") }}'
         data_tests:
@@ -321,10 +554,16 @@ models:
               arguments:
                 to: ref('dim_course')
                 field: course_sk
+        entity:
+          type: foreign
+          name: course
       - name: week_start
         description: Beginning date of the weekly LMS activity window.
         data_tests:
           - not_null
+        dimension:
+          type: time
+        granularity: day
       - name: total_events
         description: '{{ doc("he_measure_total_events") }}'
         data_tests:
@@ -402,3 +641,82 @@ models:
           - dbt_utils.expression_is_true:
               arguments:
                 expression: '>= 0'
+      - name: _loaded_at
+        description: '{{ doc("he_col__loaded_at")}}'
+        data_tests:
+          - not_null
+    metrics:
+      - name: lms_total_events
+        description: Total LMS events.
+        type: simple
+        label: LMS Total Events
+        agg: sum
+        expr: total_events
+      - name: lms_logins
+        description: Total LMS logins.
+        type: simple
+        label: LMS Logins
+        agg: sum
+        expr: logins
+      - name: lms_page_views
+        description: Total LMS page views.
+        type: simple
+        label: LMS Page Views
+        agg: sum
+        expr: page_views
+      - name: lms_video_views
+        description: Total LMS video views.
+        type: simple
+        label: LMS Video Views
+        agg: sum
+        expr: video_views
+      - name: lms_assessment_events
+        description: Total LMS assessment events.
+        type: simple
+        label: LMS Assessment Events
+        agg: sum
+        expr: assessment_events
+      - name: lms_forum_posts
+        description: Total LMS forum posts.
+        type: simple
+        label: LMS Forum Posts
+        agg: sum
+        expr: forum_posts
+      - name: total_session_seconds
+        description: Total LMS session seconds.
+        type: simple
+        label: Total Session Seconds
+        agg: sum
+        expr: total_session_seconds
+      - name: avg_session_seconds
+        description: Average LMS session seconds.
+        type: simple
+        label: Average Session Seconds
+        agg: average
+        expr: avg_session_seconds
+      - name: average_best_score_in_week
+        description: Average best score recorded in the week.
+        type: simple
+        label: Average Best Score In Week
+        agg: average
+        expr: best_score_in_week
+      - name: mobile_events
+        description: Total mobile LMS events.
+        type: simple
+        label: Mobile Events
+        agg: sum
+        expr: mobile_events
+      - name: desktop_events
+        description: Total desktop LMS events.
+        type: simple
+        label: Desktop Events
+        agg: sum
+        expr: desktop_events
+      - name: engagement_score
+        description: Total weighted engagement score.
+        type: simple
+        label: Engagement Score
+        agg: sum
+        expr: engagement_score
+
+
