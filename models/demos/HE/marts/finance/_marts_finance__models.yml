@@ -5,12 +5,20 @@ models:
     description: >
       Transaction fact at student fee charge grain.
       Covers academic and non-academic charges with GBP-denominated measures.
+    semantic_model:
+      enabled: true
+      name: fct_fee_charges
+    agg_time_dimension: charge_date
+
     columns:
       - name: fee_sk
         description: '{{ doc("he_col_fee_sk") }}'
         data_tests:
           - unique
           - not_null
+        entity:
+          type: primary
+          name: fee_charge
       - name: fee_id
         description: '{{ doc("he_col_fee_id") }}'
         data_tests:
@@ -24,6 +32,9 @@ models:
               arguments:
                 to: ref('dim_student')
                 field: student_sk
+        entity:
+          type: foreign
+          name: student
       - name: term_sk
         description: '{{ doc("he_col_term_sk") }}'
         data_tests:
@@ -32,34 +43,50 @@ models:
               arguments:
                 to: ref('dim_term')
                 field: term_sk
+        entity:
+          type: foreign
+          name: term
       - name: fee_type
         description: '{{ doc("he_col_fee_type") }}'
         data_tests:
           - not_null
+        dimension:
+          type: categorical
       - name: fee_category
         description: '{{ doc("he_col_fee_category") }}'
         data_tests:
           - accepted_values:
               arguments:
                 values: ["Academic", "Non-Academic"]
+        dimension:
+          type: categorical
       - name: payment_plan
         description: '{{ doc("he_model_stg_csv_dump__fee_charges_column_payment_plan") }}'
+        dimension:
+          type: categorical
       - name: payment_status
         description: '{{ doc("he_model_stg_csv_dump__fee_charges_column_payment_status") }}'
         data_tests:
           - accepted_values:
               arguments:
                 values: ["Fully Paid", "Partially Paid", "Unpaid"]
+        dimension:
+          type: categorical
       - name: currency
         description: '{{ doc("he_col_currency") }}'
         data_tests:
           - accepted_values:
               arguments:
                 values: ["GBP"]
+        dimension:
+          type: categorical
       - name: charge_date
         description: '{{ doc("he_col_charge_date") }}'
         data_tests:
           - not_null
+        dimension:
+          type: time
+        granularity: day
       - name: amount_charged
         description: '{{ doc("he_col_amount_charged") }}'
         data_tests:
@@ -82,6 +109,8 @@ models:
                 expression: '>= 0'
       - name: waiver_applied
         description: '{{ doc("he_model_stg_csv_dump__fee_charges_column_waiver_applied") }}'
+        dimension:
+          type: categorical
       - name: waiver_flag
         description: '{{ doc("he_measure_waiver_flag") }}'
         data_tests:
@@ -104,4 +133,95 @@ models:
         description: '{{ doc("he_col__loaded_at")}}'
         data_tests:
           - not_null
-          
+    metrics:
+      - name: fee_charges
+        description: Count of fee charge events.
+        type: simple
+        label: Fee Charges
+        agg: sum
+        expr: charge_count
+      - name: amount_charged
+        description: Total amount charged in GBP.
+        type: simple
+        label: Amount Charged
+        agg: sum
+      - name: amount_paid
+        description: Total amount paid in GBP.
+        type: simple
+        label: Amount Paid
+        agg: sum
+      - name: outstanding_balance
+        description: Total outstanding balance in GBP.
+        type: simple
+        label: Outstanding Balance
+        agg: sum
+      - name: waived_charges
+        description: Count of charges with a waiver applied.
+        type: simple
+        label: Waived Charges
+        agg: sum
+        expr: waiver_flag
+      - name: unpaid_charges
+        description: Count of unpaid charges.
+        type: simple
+        label: Unpaid Charges
+        agg: sum
+        expr: unpaid_flag
+      - name: collection_rate
+        description: Share of charged amount that has been paid.
+        type: ratio
+        label: Collection Rate
+        numerator: amount_paid
+        denominator: amount_charged
+      - name: unpaid_charge_rate
+        description: Share of fee charge events that remain unpaid.
+        type: ratio
+        label: Unpaid Charge Rate
+        numerator: unpaid_charges
+        denominator: fee_charges
+      - name: waiver_rate
+        description: Share of fee charge events with a waiver applied.
+        type: ratio
+        label: Waiver Rate
+        numerator: waived_charges
+        denominator: fee_charges
+      - name: collection_gap
+        description: Difference between amount charged and amount paid.
+        type: derived
+        label: Collection Gap
+        expr: charged - paid
+        input_metrics:
+          - name: amount_charged
+            alias: charged
+          - name: amount_paid
+            alias: paid
+      - name: average_charge_amount
+        description: Average amount charged per fee event.
+        type: ratio
+        label: Average Charge Amount
+        numerator: amount_charged
+        denominator: fee_charges
+      - name: amount_charged_mtd
+        description: Month-to-date amount charged.
+        type: cumulative
+        label: Amount Charged MTD
+        input_metric: amount_charged
+        grain_to_date: month
+      - name: amount_paid_mtd
+        description: Month-to-date amount paid.
+        type: cumulative
+        label: Amount Paid MTD
+        input_metric: amount_paid
+        grain_to_date: month
+      - name: amount_charged_rolling_90d
+        description: Trailing 90-day amount charged.
+        type: cumulative
+        label: Amount Charged Rolling 90D
+        input_metric: amount_charged
+        window: 90 days
+      - name: amount_paid_rolling_90d
+        description: Trailing 90-day amount paid.
+        type: cumulative
+        label: Amount Paid Rolling 90D
+        input_metric: amount_paid
+        window: 90 days

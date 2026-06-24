@@ -6,12 +6,20 @@ models:
       Transaction fact at admissions application grain.
       Links applications to student and term dimensions where those joins are
       available for downstream admissions reporting.
+    semantic_model:
+      enabled: true
+      name: fct_applications
+    agg_time_dimension: application_date
+
     columns:
       - name: application_sk
         description: '{{ doc("he_col_application_sk") }}'
         data_tests:
           - unique
           - not_null
+        entity:
+          type: primary
+          name: application
       - name: application_id
         description: '{{ doc("he_model_stg_json_dump__applications_column_application_id") }}'
         data_tests:
@@ -24,6 +32,9 @@ models:
               arguments:
                 to: ref('dim_student')
                 field: student_sk
+        entity:
+          type: foreign
+          name: student
       - name: term_sk
         description: '{{ doc("he_col_term_sk") }}'
         data_tests:
@@ -31,60 +42,95 @@ models:
               arguments:
                 to: ref('dim_term')
                 field: term_sk
+        entity:
+          type: foreign
+          name: term
       - name: full_name
         description: '{{ doc("he_col_full_name") }}'
         data_tests:
           - not_null
+        dimension:
+          type: categorical
       - name: gender
         description: '{{ doc("he_col_gender") }}'
         data_tests:
           - accepted_values:
               arguments:
                 values: ["Female", "Male", "Non-binary", "Prefer not to say"]
+        dimension:
+          type: categorical
       - name: nationality
         description: '{{ doc("he_col_nationality") }}'
         data_tests:
           - not_null
+        dimension:
+          type: categorical
       - name: ethnicity
         description: '{{ doc("he_col_ethnicity") }}'
         data_tests:
           - not_null
+        dimension:
+          type: categorical
       - name: home_county
         description: '{{ doc("he_col_home_county") }}'
         data_tests:
           - not_null
+        dimension:
+          type: categorical
       - name: fee_status
         description: '{{ doc("he_model_column_fee_status") }}'
         data_tests:
           - accepted_values:
               arguments:
                 values: ["Home", "International"]
+        dimension:
+          type: categorical
       - name: disability_disclosure
         description: '{{ doc("he_model_stg_json_dump__applications_column_disability_disclosure") }}'
+        dimension:
+          type: categorical
       - name: programme_name
         description: '{{ doc("he_col_programme_name") }}'
         data_tests:
           - not_null
+        dimension:
+          type: categorical
+          name: application_programme_name
       - name: programme_code
         description: '{{ doc("he_col_programme_code") }}'
         data_tests:
           - not_null
+        dimension:
+          type: categorical
+          name: application_programme_code
+
       - name: school
         description: '{{ doc("he_col_school") }}'
         data_tests:
           - not_null
+        dimension:
+          type: categorical
+          name: application_school
+
       - name: entry_year
         description: '{{ doc("he_col_entry_year") }}'
         data_tests:
           - not_null
+        dimension:
+          type: categorical
       - name: application_source
         description: '{{ doc("he_model_stg_json_dump__applications_column_application_source") }}'
         data_tests:
           - not_null
+        dimension:
+          type: categorical
       - name: application_date
         description: '{{ doc("he_model_stg_json_dump__applications_column_application_date") }}'
         data_tests:
           - not_null
+        dimension:
+          type: time
+        granularity: day
       - name: ucas_points
         description: '{{ doc("he_col_ucas_points") }}'
         data_tests:
@@ -93,6 +139,8 @@ models:
         description: '{{ doc("he_model_stg_json_dump__applications_column_personal_statement_word_count") }}'
       - name: interview_completed
         description: '{{ doc("he_model_stg_json_dump__applications_column_interview_completed") }}'
+        dimension:
+          type: categorical
       - name: interview_score
         description: '{{ doc("he_model_stg_json_dump__applications_column_interview_score") }}'
       - name: outcome
@@ -101,12 +149,19 @@ models:
           - accepted_values:
               arguments:
                 values: ["Offer Accepted", "Offer Declined", "Rejected", "Withdrawn", "Conditional Offer", "Unconditional Offer"]
+        dimension:
+          type: categorical
       - name: outcome_date
         description: '{{ doc("he_model_stg_json_dump__applications_column_outcome_date") }}'
+        dimension:
+          type: time
+        granularity: day
       - name: is_converted
         description: '{{ doc("he_model_stg_json_dump__applications_column_is_converted") }}'
         data_tests:
           - not_null
+        dimension:
+          type: categorical
       - name: application_count
         description: '{{ doc("he_measure_application_count") }}'
         data_tests:
@@ -143,3 +198,104 @@ models:
         description: '{{ doc("he_col__loaded_at")}}'
         data_tests:
           - not_null
+    metrics:
+      - name: applications
+        description: Count of applications.
+        type: simple
+        label: Applications
+        agg: sum
+        expr: application_count
+      - name: converted_applications
+        description: Count of converted applications.
+        type: simple
+        label: Converted Applications
+        agg: sum
+        expr: converted_flag
+      - name: rejected_applications
+        description: Count of rejected applications.
+        type: simple
+        label: Rejected Applications
+        agg: sum
+        expr: rejected_flag
+      - name: declined_applications
+        description: Count of declined applications.
+        type: simple
+        label: Declined Applications
+        agg: sum
+        expr: declined_flag
+      - name: interviewed_applications
+        description: Count of applications with an interview completed.
+        type: simple
+        label: Interviewed Applications
+        agg: sum
+        expr: interviewed_flag
+      - name: offer_stage_applications
+        description: Count of applications that reached an offer stage.
+        type: simple
+        label: Offer Stage Applications
+        agg: sum
+        expr: 1
+        filter: |
+          {{ Dimension('application__outcome') }} in ('Conditional Offer', 'Unconditional Offer', 'Offer Accepted', 'Offer Declined')
+      - name: conversion_rate
+        description: Share of applications that converted.
+        type: ratio
+        label: Conversion Rate
+        numerator: converted_applications
+        denominator: applications
+      - name: rejection_rate
+        description: Share of applications that were rejected.
+        type: ratio
+        label: Rejection Rate
+        numerator: rejected_applications
+        denominator: applications
+      - name: interview_rate
+        description: Share of applications that completed an interview.
+        type: ratio
+        label: Interview Rate
+        numerator: interviewed_applications
+        denominator: applications
+      - name: offer_rate
+        description: Share of applications that reached an offer stage.
+        type: ratio
+        label: Offer Rate
+        numerator: offer_stage_applications
+        denominator: applications
+      - name: unconverted_applications
+        description: Applications that did not convert.
+        type: derived
+        label: Unconverted Applications
+        expr: applications - converted
+        input_metrics:
+          - name: applications
+          - name: converted_applications
+            alias: converted
+      - name: applications_mtd
+        description: Month-to-date applications.
+        type: cumulative
+        label: Applications MTD
+        input_metric: applications
+        grain_to_date: month
+      - name: applications_rolling_90d
+        description: Trailing 90-day applications.
+        type: cumulative
+        label: Applications Rolling 90D
+        input_metric: applications
+        window: 90 days
+      - name: converted_applications_rolling_90d
+        description: Trailing 90-day converted applications.
+        type: cumulative
+        label: Converted Applications Rolling 90D
+        input_metric: converted_applications
+        window: 90 days
+      - name: applications_growth_mom
+        description: Month-over-month application growth percentage.
+        type: derived
+        label: Applications Growth % M/M
+        expr: (current_applications - applications_prev_month) * 100 / applications_prev_month
+        input_metrics:
+          - name: applications
+            alias: current_applications
+          - name: applications
+            alias: applications_prev_month
+            offset_window: 1 month

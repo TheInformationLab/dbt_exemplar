@@ -1,0 +1,51 @@
+saved_queries:
+  - name: he_admissions_by_school_monthly
+    description: Admissions application volume and funnel metrics by application school and month.
+    label: HE Admissions by School Monthly
+    query_params:
+      metrics:
+        - applications
+        - converted_applications
+        - conversion_rate
+        - rejection_rate
+      group_by:
+        - TimeDimension('metric_time', 'month')
+        - Dimension('application__application_school')
+    exports:
+      - name: he_admissions_by_school_monthly
+        config:
+          export_as: table
+
+  - name: he_enrolment_outcomes_by_term
+    description: Enrolment volume and outcome metrics by academic term.
+    label: HE Enrolment Outcomes by Term
+    query_params:
+      metrics:
+        - enrolments
+        - successful_enrolments
+        - completed_attempt_rate
+        - pass_rate
+        - withdrawal_rate
+      group_by:
+        - Dimension('term__academic_year_label')
+    exports:
+      - name: he_enrolment_outcomes_by_term
+        config:
+          export_as: table
+
+  - name: he_fee_collection_by_school_term
+    description: Fee collection metrics by student school and academic term.
+    label: HE Fee Collection by School and Term
+    query_params:
+      metrics:
+        - amount_charged
+        - amount_paid
+        - outstanding_balance
+        - collection_rate
+      group_by:
+        - Dimension('student__school')
+        - Dimension('term__academic_year_label')
+    exports:
+      - name: he_fee_collection_by_school_term
+        config:
+          export_as: table

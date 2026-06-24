@@ -264,31 +264,3 @@ metrics:
   #   type_params:
   #     measure: revenue
 
-saved_queries:
-  - name: revenue_metrics
-    query_params:
-      metrics:
-        - revenue
-        - food_revenue
-        - drink_revenue
-      group_by:
-        - TimeDimension('metric_time', 'day')
-    exports:
-      - name: revenue_metrics
-        config:
-          export_as: table
-
-  - name: order_metrics
-    query_params:
-      metrics:
-        - orders
-        - new_customer_orders
-        - order_total
-        - food_orders
-        - drink_orders
-      group_by:
-        - TimeDimension('metric_time', 'day')
-    exports:
-      - name: order_metrics
-        config:
-          export_as: table
