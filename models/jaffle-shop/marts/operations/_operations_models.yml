@@ -1,21 +1,65 @@
 models:
   - name: locations
-    description: List of open locations with basic cleaning and transformation applied, one row per location.
+    description: "List of open locations with basic cleaning and transformation applied, one row per location. Location dimension table. The grain of the table is one row per location.\n"
     columns:
       - name: location_id
         description: The unique key for each location.
         data_tests:
           - not_null
           - unique
+        entity:
+          type: primary
+          name: location
+      - name: location_name
+        dimension:
+          type: categorical
+      - name: opened_date
+        dimension:
+          type: time
+        granularity: day
+    semantic_model:
+      enabled: true
+      name: locations
+    agg_time_dimension: opened_date
+    metrics:
+      - name: average_tax_rate
+        description: Average tax rate.
+        expr: tax_rate
+        agg: average
+        type: simple
+        hidden: true
 
   - name: supplies
     description: >
       List of our supply expenses data with basic cleaning and transformation applied.
 
-      One row per supply cost, not per supply. As supply costs fluctuate they receive a new row with a new UUID. Thus there can be multiple rows per supply_id.
+      One row per supply cost, not per supply. As supply costs fluctuate they receive a new row
+      with a new UUID. Thus there can be multiple rows per supply_id. Supplies dimension table.
+      The grain of the table is one row per supply and product combination.
     columns:
       - name: supply_uuid
         description: The unique key of our supplies per cost.
         data_tests:
           - not_null
           - unique
+        entity:
+          type: primary
+          name: supply
+      - name: supply_id
+        dimension:
+          type: categorical
+      - name: product_id
+        dimension:
+          type: categorical
+      - name: supply_name
+        dimension:
+          type: categorical
+      - name: supply_cost
+        dimension:
+          type: categorical
+      - name: is_perishable_supply
+        dimension:
+          type: categorical
+    semantic_model:
+      enabled: true
+      name: supplies

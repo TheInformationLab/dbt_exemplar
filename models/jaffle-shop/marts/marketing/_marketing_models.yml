@@ -1,6 +1,6 @@
 models:
   - name: customers
-    description: Customer overview data mart, offering key details for each unique customer. One row per customer.
+    description: "Customer overview data mart, offering key details for each unique customer. One row per customer. Customer grain mart.\n"
     data_tests:
       - dbt_utils.expression_is_true:
           arguments:
@@ -11,14 +11,25 @@ models:
         data_tests:
           - not_null
           - unique
+        entity:
+          type: primary
+          name: customer
       - name: customer_name
         description: Customers' full name.
+        dimension:
+          type: categorical
       - name: count_lifetime_orders
         description: Total number of orders a customer has ever placed.
       - name: first_ordered_at
         description: The timestamp when a customer placed their first order.
+        dimension:
+          type: time
+        granularity: day
       - name: last_ordered_at
         description: The timestamp of a customer's most recent order.
+        dimension:
+          type: time
+        granularity: day
       - name: lifetime_spend_pretax
         description: The sum of all the pre-tax subtotals of every order a customer has placed.
       - name: lifetime_tax_paid
@@ -31,12 +42,86 @@ models:
           - accepted_values:
               arguments:
                 values: ["new", "returning"]
-
+        dimension:
+          type: categorical
+    semantic_model:
+      enabled: true
+      name: customers
+    agg_time_dimension: first_ordered_at
+    metrics:
+      - name: lifetime_spend_pretax
+        description: Customer's lifetime spend before tax.
+        label: LTV Pre-tax
+        type: simple
+        agg: sum
+      - name: count_lifetime_orders
+        description: Count of lifetime orders.
+        label: Count Lifetime Orders
+        type: simple
+        agg: sum
+      - name: customers
+        description: Count of unique customers.
+        agg: count_distinct
+        expr: customer_id
+        type: simple
+        hidden: true
+      - name: lifetime_spend
+        agg: sum
+        description: Gross customer lifetime spend inclusive of taxes.
+        type: simple
+        hidden: true
+      - name: average_order_value
+        description: LTV pre-tax / number of orders.
+        label: Average Order Value
+        type: derived
+        expr: lifetime_spend_pretax / count_lifetime_orders
+        input_metrics:
+          - name: count_lifetime_orders
+          - name: lifetime_spend_pretax
   - name: products
-    description: Product (food and drink items that can be ordered) data with basic cleaning and transformation applied, one row per product.
+    description: "Product (food and drink items that can be ordered) data with basic cleaning and transformation applied, one row per product. Product dimension table. The grain of the table is one row per product.\n"
     columns:
       - name: product_id
         description: The unique key for each product.
         data_tests:
           - not_null
           - unique
+        entity:
+          type: primary
+          name: product
+      - name: product_name
+        dimension:
+          type: categorical
+      - name: product_type
+        dimension:
+          type: categorical
+      - name: product_description
+        dimension:
+          type: categorical
+      - name: is_food_item
+        dimension:
+          type: categorical
+      - name: is_drink_item
+        dimension:
+          type: categorical
+      - name: product_price
+        dimension:
+          type: categorical
+    semantic_model:
+      enabled: true
+      name: products
+
+saved_queries:
+  - name: customer_order_metrics
+    query_params:
+      metrics:
+        - count_lifetime_orders
+        - lifetime_spend_pretax
+        - average_order_value
+      group_by:
+        - Entity('customer')
+        - Dimension('customer__customer_name')
+    exports:
+      - name: customer_order_metrics
+        config:
+          export_as: table
