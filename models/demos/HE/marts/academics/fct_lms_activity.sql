@@ -15,7 +15,10 @@ with activity as (
     select * from {{ ref('int_student_lms_activity') }}
     {% if is_incremental() %}
         -- this filter will only be applied on an incremental run
-        where _loaded_at > (select max(_loaded_at) from {{ this }}) 
+        where _loaded_at > (
+            select coalesce(max(existing._loaded_at), '1900-01-01'::timestamp)
+            from {{ this }} as existing
+        )
     {% endif %}
 
 )
