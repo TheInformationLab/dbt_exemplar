@@ -13,7 +13,7 @@ sources:
         error_after: 
           count: 90
           period: day
-        loaded_at_field: __loaded_at
+        loaded_at_field: convert_timezone('UTC', 'UTC', __loaded_at)::timestamp_tz
         
 
     tables:
