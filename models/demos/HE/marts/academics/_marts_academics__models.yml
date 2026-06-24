@@ -139,7 +139,7 @@ models:
           - not_null
       - name: course_year_level
         description: '{{ doc("he_col_course_year_level") }}'
-        data_type: number
+        data_type: integer
         data_tests:
           - not_null
       - name: level_of_study
