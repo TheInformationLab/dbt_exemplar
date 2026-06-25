@@ -1,6 +1,6 @@
 -- Staging: application prior qualifications (LATERAL FLATTEN)
--- Source: applications.json → HE_DEMO.RAW.APPLICATIONS_RAW
--- Grain: one row per application × qualification
+-- Source: applications.json to HE_DEMO.RAW.APPLICATIONS_RAW
+-- Grain: one row per application and qualification
 -- Demo highlight: Snowflake VARIANT + LATERAL FLATTEN of nested array
 
 with source as (
@@ -22,7 +22,7 @@ with source as (
         , qual.value:subject::varchar as subject
         , qual.value:grade::varchar as grade
 
-        -- map A-Level grades to UCAS tariff points
+        -- map A Level grades to UCAS tariff points
         , case qual.value:grade::varchar
             when 'A*' then 56
             when 'A' then 48

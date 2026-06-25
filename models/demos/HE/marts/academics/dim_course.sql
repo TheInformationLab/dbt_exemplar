@@ -1,5 +1,5 @@
 -- Dimension: course
--- Derived from course_enrolments — no separate source table.
+-- Derived from course_enrolments. no separate source table.
 -- One row per course_code.
 {{
     config(

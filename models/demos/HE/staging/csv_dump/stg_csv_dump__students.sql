@@ -1,5 +1,5 @@
 -- Staging: students
--- Source: students.csv → HE_DEMO.RAW.STUDENTS
+-- Source: students.csv HE_DEMO.RAW.STUDENTS
 -- Grain: one row per student
 with source as (
 

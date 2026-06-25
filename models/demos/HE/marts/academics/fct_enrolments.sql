@@ -1,5 +1,5 @@
 -- Fact: course enrolments
--- Grain: one row per student-course-term enrolment
+-- Grain: one row per student/course/term enrolment
 -- Kimball type: transaction fact
 {{
     config(
