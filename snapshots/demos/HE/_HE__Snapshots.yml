@@ -6,6 +6,10 @@ snapshots:
     relation: source('csv_dump','course_enrolments')
     description: a snapshot of the course_enrolments source table
     config: 
+      database: | 
+          {%- if target.name == "Prod" -%} HE_DEMO
+          {%- else -%} "{{target.database}}"
+          {%- endif -%}
       schema: he_snapshots
       strategy: check
       unique_key: enrolment_id
@@ -16,6 +20,10 @@ snapshots:
     relation: source('csv_dump','fee_charges')
     description: a snapshot of the fee_charges source table
     config: 
+      database: | 
+          {%- if target.name == "Prod" -%} HE_DEMO
+          {%- else -%} "{{target.database}}"
+          {%- endif -%}
       schema: he_snapshots
       strategy: check
       unique_key: fee_id
@@ -26,6 +34,10 @@ snapshots:
     relation: source('csv_dump','students')
     description: a snapshot of the students source table
     config: 
+      database: | 
+          {%- if target.name == "Prod" -%} HE_DEMO
+          {%- else -%} "{{target.database}}"
+          {%- endif -%}
       schema: he_snapshots
       strategy: check
       unique_key: student_id
@@ -37,6 +49,10 @@ snapshots:
     relation: ref('stg_json_dump__lms_events')
     description: a snapshot of the parsed lms events json
     config: 
+      database: | 
+          {%- if target.name == "Prod" -%} HE_DEMO
+          {%- else -%} "{{target.database}}"
+          {%- endif -%}
       schema: he_snapshots
       strategy: check
       unique_key: event_id
@@ -47,6 +63,10 @@ snapshots:
     relation: ref('stg_json_dump__applications')
     description: a snapshot of the parsed applications json
     config: 
+      database: | 
+          {%- if target.name == "Prod" -%} HE_DEMO
+          {%- else -%} "{{target.database}}"
+          {%- endif -%}
       schema: he_snapshots
       strategy: check
       unique_key: application_id
@@ -57,6 +77,10 @@ snapshots:
     relation: ref('stg_json_dump__application_qualifications')
     description: a snapshot of the parsed application qualifications json
     config: 
+      database: | 
+          {%- if target.name == "Prod" -%} HE_DEMO
+          {%- else -%} "{{target.database}}"
+          {%- endif -%}
       schema: he_snapshots
       strategy: check
       unique_key: ['application_id','qualification_seq']
