@@ -1,5 +1,5 @@
 -- Staging: fee charges
--- Source: fee_charges.csv → HE_DEMO.RAW.FEE_CHARGES
+-- Source: fee_charges.csv to HE_DEMO.RAW.FEE_CHARGES
 -- Grain: one row per charge event
 with source as (
 

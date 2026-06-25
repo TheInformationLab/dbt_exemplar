@@ -1,6 +1,6 @@
 -- Dimension: academic term
 -- Conformed dimension shared across all three mart domains.
--- Seeded from the distinct terms present in enrolments + fees.
+-- Seeded from the distinct terms present in enrolments and fees.
 {{
     config(
         materialized='incremental',

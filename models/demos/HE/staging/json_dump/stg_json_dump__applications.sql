@@ -1,5 +1,5 @@
 -- Staging: admissions applications
--- Source: applications.json → HE_DEMO.RAW.APPLICATIONS_RAW (VARIANT column)
+-- Source: applications.json HE_DEMO.RAW.APPLICATIONS_RAW (VARIANT column)
 -- Grain: one row per application
 -- Note: prior_qualifications array is flattened into stg_json_dump__application_qualifications
 

@@ -1,5 +1,5 @@
 -- Staging: course enrolments
--- Source: course_enrolments.csv → HE_DEMO.RAW.COURSE_ENROLMENTS
+-- Source: course_enrolments.csv HE_DEMO.RAW.COURSE_ENROLMENTS
 -- Grain: one row per student-course-term
 
 with source as (
@@ -23,7 +23,7 @@ with source as (
 
         -- term
         , academic_term
-        -- derive academic year (e.g. "2023/24 S1" → 2023)
+        -- derive academic year (e.g. "2023/24 S1" to 2023)
         , split_part(academic_term, '/', 1)::int as academic_year_start
         , credits::int as credits
 

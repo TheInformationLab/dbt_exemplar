@@ -1,5 +1,5 @@
 -- Staging: LMS clickstream events
--- Source: lms_events.json → HE_DEMO.RAW.LMS_EVENTS_RAW (VARIANT column)
+-- Source: lms_events.json HE_DEMO.RAW.LMS_EVENTS_RAW (VARIANT column)
 -- Grain: one row per LMS event
 
 with source as (

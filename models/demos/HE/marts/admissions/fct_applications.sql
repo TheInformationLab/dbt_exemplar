@@ -61,7 +61,7 @@ with applications as (
         , d_stu.student_sk
         , d_trm.term_sk
 
-        -- applicant attributes (role-playing dimension — no separate dim_applicant)
+        -- applicant attributes (role-playing dimension. no separate dim_applicant)
         , a.full_name
         , a.gender
         , a.nationality
