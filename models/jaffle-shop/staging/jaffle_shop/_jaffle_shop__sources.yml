@@ -5,6 +5,14 @@ sources:
     schema: raw
     database: jaffle_shop
     description: E-commerce data for the Jaffle Shop
+    config:
+      freshness:
+        warn_after:
+          count: 4000
+          period: day
+        error_after:
+          count: 8000
+          period: day
     tables:
       - name: raw_customers
         description: One record per person who has purchased one or more items

@@ -1,6 +1,74 @@
 version: 2
 
 models:
+  - name: dim_course
+    description: >
+      Conformed course dimension. One row per course code.
+      Derived from staged course enrolments for shared reporting use.
+    semantic_model:
+      enabled: true
+      name: dim_course
+
+    config:
+      contract:
+        enforced: true
+    columns:
+      - name: course_sk
+        description: '{{ doc("he_col_course_sk") }}'
+        data_type: varchar
+        data_tests:
+          - unique
+          - not_null
+        entity:
+          type: primary
+          name: course
+      - name: course_code
+        description: '{{ doc("he_col_course_code") }}'
+        data_type: varchar
+        data_tests:
+          - unique
+          - not_null
+        dimension:
+          type: categorical
+      - name: course_name
+        description: '{{ doc("he_col_course_name") }}'
+        data_type: varchar
+        data_tests:
+          - not_null
+        dimension:
+          type: categorical
+      - name: programme_code
+        description: '{{ doc("he_col_programme_code") }}'
+        data_type: varchar
+        data_tests:
+          - not_null
+        dimension:
+          type: categorical
+      - name: school
+        description: '{{ doc("he_col_school") }}'
+        data_type: varchar
+        data_tests:
+          - not_null
+        dimension:
+          type: categorical
+      - name: course_year_level
+        description: '{{ doc("he_col_course_year_level") }}'
+        data_type: integer
+        data_tests:
+          - not_null
+        dimension:
+          type: categorical
+      - name: level_of_study
+        description: '{{ doc("he_col_level_of_study") }}'
+        data_type: varchar
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["Undergraduate", "Postgraduate"]
+        dimension:
+          type: categorical
+
+
   - name: dim_student
     description: >
       Conformed student dimension. One row per student.
@@ -148,72 +216,7 @@ models:
         dimension:
           type: categorical
 
-  - name: dim_course
-    description: >
-      Conformed course dimension. One row per course code.
-      Derived from staged course enrolments for shared reporting use.
-    semantic_model:
-      enabled: true
-      name: dim_course
-
-    config:
-      contract:
-        enforced: true
-    columns:
-      - name: course_sk
-        description: '{{ doc("he_col_course_sk") }}'
-        data_type: varchar
-        data_tests:
-          - unique
-          - not_null
-        entity:
-          type: primary
-          name: course
-      - name: course_code
-        description: '{{ doc("he_col_course_code") }}'
-        data_type: varchar
-        data_tests:
-          - unique
-          - not_null
-        dimension:
-          type: categorical
-      - name: course_name
-        description: '{{ doc("he_col_course_name") }}'
-        data_type: varchar
-        data_tests:
-          - not_null
-        dimension:
-          type: categorical
-      - name: programme_code
-        description: '{{ doc("he_col_programme_code") }}'
-        data_type: varchar
-        data_tests:
-          - not_null
-        dimension:
-          type: categorical
-      - name: school
-        description: '{{ doc("he_col_school") }}'
-        data_type: varchar
-        data_tests:
-          - not_null
-        dimension:
-          type: categorical
-      - name: course_year_level
-        description: '{{ doc("he_col_course_year_level") }}'
-        data_type: integer
-        data_tests:
-          - not_null
-        dimension:
-          type: categorical
-      - name: level_of_study
-        description: '{{ doc("he_col_level_of_study") }}'
-        data_type: varchar
-        data_tests:
-          - accepted_values:
-              arguments:
-                values: ["Undergraduate", "Postgraduate"]
-        dimension:
-          type: categorical
+  
 
   - name: dim_term
     description: >
