@@ -71,7 +71,7 @@ with activity as (
         , a.mobile_events
         , a.desktop_events
 
-        -- derived engagement score (demo metric — weight as preferred)
+        -- derived engagement score (demo metric - weight as preferred)
         , round(
             (a.logins * 2)
             + (a.page_views * 1)

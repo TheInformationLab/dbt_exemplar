@@ -53,8 +53,8 @@ with students as (
         -- derived age band at entry
         , case
             when ucas_points >= 144 then 'AAA+'
-            when ucas_points >= 112 then 'BBB–AAB'
-            when ucas_points >= 96 then 'CCC–BBC'
+            when ucas_points >= 112 then 'BBB-AAB'
+            when ucas_points >= 96 then 'CCC-BBC'
             else 'Below CCC'
         end as entry_tariff_band
 
