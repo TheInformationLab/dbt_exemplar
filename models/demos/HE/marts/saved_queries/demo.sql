@@ -41,16 +41,16 @@ with enrolments as (
         , course_year_level
         , 'Undergraduate' as level_of_study   -- extend for PG demo
         -- , Case when course_name = 'Databases' THEN 'Postgraduate' ELSE 'Undergraduate' END as level_of_study
-        
+
     from courses
 
 )
 
 , spine as (
 
-    select 
-    * 
-    , greatest(enrol_loaded_at,student_loaded_at) as _loaded_at
+    select
+        *
+        , greatest(enrol_loaded_at, student_loaded_at) as _loaded_at
     from {{ ref('int_student_enrolment_spine') }}
     {% if is_incremental() %}
         -- this filter will only be applied on an incremental run
@@ -76,9 +76,9 @@ with enrolments as (
 
     select
         -- surrogate key
-        
-            
-            {{ dbt_utils.generate_surrogate_key(['s.enrolment_id']) }}
+
+
+        {{ dbt_utils.generate_surrogate_key(['s.enrolment_id']) }}
             as enrolment_sk
 
         -- natural key
@@ -117,15 +117,16 @@ with enrolments as (
 )
 
 , final as (
-    select 
+    select
         course_code
         , delivery_mode
         , sum(passed_flag) as total_passes
         , sum(failed_flag) as total_failed
         , sum(withdrawn_flag) as total_withdrawn
         , sum(enrolment_count) as total_enrolled
-    from joined 
-    group by 1,2
+    from joined
+    group by 1, 2
 )
+
 select * from final
 order by total_enrolled desc
