@@ -11,9 +11,9 @@ snapshots:
           {%- else -%} "{{target.database}}"
           {%- endif -%}
       schema: he_snapshots
-      strategy: check
+      strategy: timestamp
       unique_key: enrolment_id
-      check_cols: all
+      updated_at: __loaded_at
       dbt_valid_to_current: to_date('9999-12-31')
       hard_deletes: invalidate
 
@@ -26,9 +26,9 @@ snapshots:
           {%- else -%} "{{target.database}}"
           {%- endif -%}
       schema: he_snapshots
-      strategy: check
+      strategy: timestamp
       unique_key: fee_id
-      check_cols: all
+      updated_at: __loaded_at
       dbt_valid_to_current: to_date('9999-12-31')
       hard_deletes: invalidate
 
@@ -41,9 +41,9 @@ snapshots:
           {%- else -%} "{{target.database}}"
           {%- endif -%}
       schema: he_snapshots
-      strategy: check
+      strategy: timestamp
       unique_key: student_id
-      check_cols: all
+      updated_at: __loaded_at
       dbt_valid_to_current: to_date('9999-12-31')
       hard_deletes: invalidate
 
@@ -57,9 +57,9 @@ snapshots:
           {%- else -%} "{{target.database}}"
           {%- endif -%}
       schema: he_snapshots
-      strategy: check
+      strategy: timestamp
       unique_key: event_id
-      check_cols: all
+      updated_at: _loaded_at
       dbt_valid_to_current: to_date('9999-12-31')
       hard_deletes: invalidate
 
@@ -72,9 +72,9 @@ snapshots:
           {%- else -%} "{{target.database}}"
           {%- endif -%}
       schema: he_snapshots
-      strategy: check
+      strategy: timestamp
       unique_key: application_id
-      check_cols: all
+      updated_at: _loaded_at
       dbt_valid_to_current: to_date('9999-12-31')
       hard_deletes: invalidate
 
@@ -87,8 +87,8 @@ snapshots:
           {%- else -%} "{{target.database}}"
           {%- endif -%}
       schema: he_snapshots
-      strategy: check
+      strategy: timestamp
       unique_key: ['application_id','qualification_seq']
-      check_cols: all
+      updated_at: _loaded_at
       dbt_valid_to_current: to_date('9999-12-31')
       hard_deletes: invalidate
