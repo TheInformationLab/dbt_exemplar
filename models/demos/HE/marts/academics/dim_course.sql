@@ -52,8 +52,8 @@ with enrolments as (
         , programme_code
         , school
         , course_year_level
-        , 'Undergraduate' as level_of_study   -- extend for PG demo
-        -- , Case when course_name = 'Databases' THEN 'Postgraduate' ELSE 'Undergraduate' END as level_of_study
+        --, 'Undergraduate' as level_of_study   -- extend for PG demo
+        , Case when course_name = 'Databases' THEN 'Postgraduate' ELSE 'Undergraduate' END as level_of_study
         
     from courses
 
