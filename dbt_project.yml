@@ -51,24 +51,25 @@ models:
         marts:
           +materialized: table
           +schema: HE_PROD
+      
+      brightside:
+        +database: brightside
+
+        staging:
+          +materialized: view
+          +schema: STAGING
+        marts:
+          +materialized: table
+          +schema: ANALYTICS
+        semantic:
+          +materialized: semantic_view
+          +schema: ANALYTICS
 
     jaffle-shop:
       staging:
         +materialized: view
       marts:
         +materialized: table
-
-    brightside:
-      +database: brightside
-      staging:
-        +materialized: view
-        +schema: STAGING
-      marts:
-        +materialized: table
-        +schema: ANALYTICS
-      semantic:
-        +materialized: semantic_view
-        +schema: ANALYTICS
 
 
     
