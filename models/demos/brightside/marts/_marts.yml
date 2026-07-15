@@ -1,0 +1,57 @@
+version: 2
+
+models:
+  - name: dim_customers
+    description: Customer master. CUSTOMER_TYPE drives revenue exclusions.
+    columns:
+      - name: customer_id
+        data_tests: [unique, not_null]
+      - name: customer_type
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['Standard', 'Staff', 'Test account']
+
+  - name: dim_products
+    description: Product catalogue, six categories.
+    columns:
+      - name: product_id
+        data_tests: [unique, not_null]
+      - name: category
+        data_tests: [not_null]
+
+  - name: fct_sales
+    description: >
+      One row per order line. Amounts allocated from order-level totals
+      (financial source of truth). Refunds attributed to the order month.
+      The semantic view ANALYTICS.BRIGHTSIDE_SALES is defined over this model
+      -- see macros/deploy_semantic_view.sql.
+    columns:
+      - name: sale_line_id
+        data_tests: [unique, not_null]
+      - name: order_id
+        data_tests: [not_null]
+      - name: customer_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_customers')
+                field: customer_id
+      - name: product_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_products')
+                field: product_id
+      - name: order_status
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['COMPLETE', 'CANCELLED', 'RETURNED', 'PENDING']
+      - name: net_amount_gbp
+        description: Net of VAT and refunds, GBP. Null only if FX month missing.
+        data_tests: [not_null]
