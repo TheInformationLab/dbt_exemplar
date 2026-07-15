@@ -32,7 +32,7 @@ models:
     demos:
       HE:
         +database: | 
-          {%- if target.name == "Prod" -%} HE_DEMO
+          {%- if env_var('DBT_ENV_TYPE', 'DEV') == 'PROD' -%} HE_DEMO
           {%- else -%} "{{target.database}}"
           {%- endif -%}
         +quoting:
@@ -53,7 +53,10 @@ models:
           +schema: HE_PROD
       
       brightside:
-        +database: brightside
+        +database: | 
+          {%- if env_var('DBT_ENV_TYPE', 'DEV') == 'PROD' -%} BRIGHTSIDE
+          {%- else -%} "{{target.database}}"
+          {%- endif -%}
         +copy_grants: true
 
         staging:
