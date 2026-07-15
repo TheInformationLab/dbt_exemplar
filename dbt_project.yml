@@ -21,6 +21,8 @@ clean-targets:
 
 vars:
   "dbt_date:time_zone": "Europe/London"
+  pinned_month: "2026-06"
+  pinned_finance_total: 3471417.70    # e.g. 3471417.70 -- null disables the pin test
 
 # seeds:
 
@@ -49,12 +51,26 @@ models:
         marts:
           +materialized: table
           +schema: HE_PROD
+      
+      brightside:
+        +database: brightside
+
+        staging:
+          +materialized: view
+          +schema: STAGING
+        marts:
+          +materialized: table
+          +schema: ANALYTICS
+        semantic:
+          +materialized: semantic_view
+          +schema: ANALYTICS
 
     jaffle-shop:
       staging:
         +materialized: view
       marts:
         +materialized: table
+
 
     
 flags:

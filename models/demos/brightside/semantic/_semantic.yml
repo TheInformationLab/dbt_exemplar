@@ -1,0 +1,11 @@
+version: 2
+
+models:
+  - name: brightside_sales
+    description: >
+      Native Snowflake semantic view, materialised by the Snowflake-Labs
+      dbt_semantic_view package. All business definitions (metrics, synonyms,
+      verified queries, Cortex Analyst instructions) live in the model SQL and
+      deploy on every `dbt build`. Note: the package does not support
+      persist_docs -- descriptions here are for dbt docs/lineage only; the
+      COMMENTs inside the model SQL are what Snowflake (and Cortex Analyst) see.

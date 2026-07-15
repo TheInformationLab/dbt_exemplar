@@ -1,0 +1,47 @@
+version: 2
+
+sources:
+  - name: raw
+    database: BRIGHTSIDE
+    schema: RAW
+    description: >
+      Landed CSVs from generate_brightside_data.py. Deliberately ambiguous:
+      gross amounts include VAT, cancelled orders carry amounts, currencies
+      are mixed, and test/staff accounts are unmarked in ORDERS.
+    tables:
+      - name: ORDERS
+        config:
+          loaded_at_field: ORDER_TS
+          freshness:
+            warn_after: {count: 45, period: day}   # static demo data; generous on purpose
+        columns:
+          - name: ORDER_ID
+            data_tests: [unique, not_null]
+          - name: STATUS
+            data_tests:
+              - accepted_values:
+                  arguments:
+                    values: ['COMPLETE', 'CANCELLED', 'RETURNED', 'PENDING']
+          - name: CURRENCY
+            data_tests:
+              - accepted_values:
+                  arguments:
+                    values: ['GBP', 'EUR']
+      - name: ORDER_ITEMS
+        columns:
+          - name: ORDER_ITEM_ID
+            data_tests: [unique, not_null]
+      - name: REFUNDS
+        config:
+          loaded_at_field: REFUND_TS
+          freshness:
+            warn_after: {count: 45, period: day}
+        columns:
+          - name: REFUND_ID
+            data_tests: [unique, not_null]
+      - name: CUSTOMERS
+        columns:
+          - name: CUSTOMER_ID
+            data_tests: [unique, not_null]
+      - name: PRODUCTS
+      - name: FX_RATES

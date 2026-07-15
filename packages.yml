@@ -7,3 +7,5 @@ packages:
     revision: main
   - package: dbt-labs/codegen
     version: 0.14.0
+  - package: Snowflake-Labs/dbt_semantic_view
+    version: 1.0.5

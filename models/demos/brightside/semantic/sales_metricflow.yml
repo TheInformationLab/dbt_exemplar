@@ -1,0 +1,76 @@
+version: 2
+
+# ---------------------------------------------------------------------------
+# MetricFlow definitions for the dbt Semantic Layer (dbt MCP / SL APIs).
+#
+# DELIBERATELY scoped to net_revenue only. This file intentionally duplicates
+# the revenue logic in brightside_sales.sql (the Snowflake semantic view),
+# because as of mid-2026 there is no mature compile path between the two
+# specs -- the Open Semantic Interchange (OSI) is the intended bridge.
+# This duplication is the talk's "open wound" slide: keep the CASE expression
+# below CHARACTER-IDENTICAL to the revenue_amount_gbp fact in
+# brightside_sales.sql, and treat any edit to one without the other as a
+# review-blocking offence.
+#
+# (Classic spec, valid on dbt Core 1.9+ and Fusion. On Fusion / Core v1.12+
+# you can migrate to the collapsed spec with:
+#   dbt-autofix deprecations --semantic-layer)
+# ---------------------------------------------------------------------------
+
+semantic_models:
+  - name: sales
+    description: >
+      Order lines from FCT_SALES. Mirrors (a scoped subset of) the Snowflake
+      semantic view BRIGHTSIDE_SALES.
+    model: ref('fct_sales')
+    defaults:
+      agg_time_dimension: order_date
+
+    entities:
+      - name: sale_line
+        type: primary
+        expr: sale_line_id
+      - name: customer
+        type: foreign
+        expr: customer_id
+      - name: product
+        type: foreign
+        expr: product_id
+
+    dimensions:
+      - name: order_date
+        type: time
+        type_params:
+          time_granularity: day
+      - name: order_status
+        type: categorical
+      - name: channel
+        type: categorical
+      - name: currency
+        type: categorical
+      - name: customer_type
+        type: categorical
+
+    measures:
+      - name: revenue_amount_gbp
+        description: >
+          Finance revenue at line level. MUST stay character-identical to the
+          revenue_amount_gbp fact in brightside_sales.sql.
+        agg: sum
+        expr: >
+          case when order_status = 'COMPLETE'
+                and not is_test_account
+                and not is_staff_order
+               then net_amount_gbp else 0 end
+
+metrics:
+  - name: net_revenue
+    label: Net Revenue
+    description: >
+      OFFICIAL revenue (Finance definition): net of VAT and refunds, COMPLETE
+      orders only, staff and test accounts excluded, GBP (EUR converted at
+      monthly average rate). Refunds attributed to the order month. Identical
+      by construction to the net_revenue metric in the Snowflake semantic view.
+    type: simple
+    type_params:
+      measure: revenue_amount_gbp
