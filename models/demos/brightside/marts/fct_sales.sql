@@ -55,9 +55,10 @@ select
 
     -- Finance's net: (gross - refunds), VAT removed, EUR converted:
     round(
-        (o.gross_amount - coalesce(r.total_refund, 0)) * ls.share_of_order
-        / 1.20
-        * case when o.currency = 'EUR' then fx.eur_to_gbp_avg else 1 end
+        (o.gross_amount - coalesce(r.total_refund, 0)) 
+        * ls.share_of_order / 1.20
+        * case when o.currency = 'EUR' 
+        then fx.eur_to_gbp_avg else 1 end
     , 4)                                               as net_amount_gbp
 
 from line_share ls
