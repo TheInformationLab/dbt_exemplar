@@ -6,6 +6,7 @@
     and attributed to the ORDER's month. Flat 20% VAT (documented
     simplification); EUR converted at the order month's average rate.
 -#}
+{{ config(grants = {'+select': ['GOVERNED_DEMO_ROLE']}) }}
 
 with order_refunds as (
 

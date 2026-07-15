@@ -1,3 +1,4 @@
+{{ config(grants = {'+select': ['GOVERNED_DEMO_ROLE']}) }}
 select
     customer_id,
     first_name || ' ' || last_name as customer_name,

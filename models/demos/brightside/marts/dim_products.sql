@@ -1,3 +1,4 @@
+{{ config(grants = {'+select': ['GOVERNED_DEMO_ROLE']}) }}
 select
     product_id,
     product_name,

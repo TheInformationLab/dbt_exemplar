@@ -54,6 +54,7 @@ models:
       
       brightside:
         +database: brightside
+        +copy_grants: true
 
         staging:
           +materialized: view
