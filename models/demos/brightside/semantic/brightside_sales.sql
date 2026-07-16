@@ -44,7 +44,7 @@ FACTS (
         COMMENT = 'Refunds allocated to this line, gross, native currency.',
     sales.revenue_amount_gbp AS
         CASE WHEN sales.ORDER_STATUS = 'COMPLETE'
-              AND NOT sales.IS_TEST_ACCOUNT
+              --AND NOT sales.IS_TEST_ACCOUNT
               AND NOT sales.IS_STAFF_ORDER
              THEN sales.NET_AMOUNT_GBP ELSE 0 END
         COMMENT = 'The Finance definition of recognisable revenue at line level: COMPLETE orders only, excluding staff and test accounts, net of VAT and refunds, GBP.',
