@@ -1,0 +1,16 @@
+exposures:
+
+  - name: Brightside_Revenue_Overview
+    label: Brightside Revenue Overview Dashboard
+    type: dashboard
+    maturity: high
+    url: https://tableau.theinformationlab.co.uk/#/site/demo/workbooks/16492/views
+    description: >
+      Overview of Brightside revenue, looking at total revenue and also category breakdown of change
+
+    depends_on:
+      - ref('brightside_sales')
+
+    owner:
+      name: Ollie Clarke
+      email: oliver.clarke@theinformationlab.co.uk
