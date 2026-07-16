@@ -28,6 +28,9 @@ sources:
                   arguments:
                     values: ['GBP', 'EUR']
       - name: ORDER_ITEMS
+        config:
+          freshness:
+            warn_after: {count: 45, period: day} 
         columns:
           - name: ORDER_ITEM_ID
             data_tests: [unique, not_null]
@@ -40,8 +43,17 @@ sources:
           - name: REFUND_ID
             data_tests: [unique, not_null]
       - name: CUSTOMERS
+        config:
+          freshness:
+            warn_after: {count: 45, period: day} 
         columns:
           - name: CUSTOMER_ID
             data_tests: [unique, not_null]
       - name: PRODUCTS
+        config:
+          freshness:
+            warn_after: {count: 45, period: day} 
       - name: FX_RATES
+        config:
+          freshness:
+            warn_after: {count: 45, period: day} 
