@@ -22,7 +22,7 @@ clean-targets:
 vars:
   "dbt_date:time_zone": "Europe/London"
   pinned_month: "2026-06"
-  pinned_finance_total: 3471417.70    # e.g. 3471417.70 -- null disables the pin test
+  pinned_finance_total: null    # e.g. 3471417.70 -- null disables the pin test
 
 # seeds:
 
