@@ -299,3 +299,14 @@ models:
           - name: applications
             alias: applications_prev_month
             offset_window: 1 month
+      - name: applications_growth_yoy
+        description: Year-over-year application growth percentage.
+        type: derived
+        label: Applications Growth % Y/Y
+        expr: (current_applications - applications_prev_year) * 100 / applications_prev_year
+        input_metrics:
+          - name: applications
+            alias: current_applications
+          - name: applications
+            alias: applications_prev_year
+            offset_window: 1 year
