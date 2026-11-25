@@ -1,4 +1,17 @@
 version: 2
+# ---------------------------------------------------------------------------
+# MetricFlow definitions for the dbt Semantic Layer (dbt MCP / SL APIs).
+#
+# DELIBERATELY scoped to net_revenue only. This file intentionally duplicates
+# the revenue logic in brightside_sales.sql (the Snowflake semantic view),
+# because as of mid-2026 there is no mature compile path between the two
+# specs -- the Open Semantic Interchange (OSI) is the intended bridge.
+# This duplication is the talk's "open wound" slide: keep the CASE expression
+# below CHARACTER-IDENTICAL to the revenue_amount_gbp fact in
+# brightside_sales.sql, and treat any edit to one without the other as a
+# review-blocking offence.
+#
+# ---------------------------------------------------------------------------
 
 models:
   - name: dim_customers
@@ -23,13 +36,14 @@ models:
 
   - name: fct_sales
     description: >
-      One row per order line. Amounts allocated from order-level totals
-      (financial source of truth). Refunds attributed to the order month.
-      The semantic view ANALYTICS.BRIGHTSIDE_SALES is defined over this model
-      -- see macros/deploy_semantic_view.sql.
+      One row per order line. Amounts allocated from order-level totals (financial source of truth). Refunds attributed to the order month. The semantic view ANALYTICS.BRIGHTSIDE_SALES is defined over this model -- see macros/deploy_semantic_view.sql.
+       Order lines from FCT_SALES. Mirrors (a scoped subset of) the Snowflake semantic view BRIGHTSIDE_SALES.
     columns:
       - name: sale_line_id
         data_tests: [unique, not_null]
+        entity:
+          type: primary
+          name: sale_line
       - name: order_id
         data_tests: [not_null]
       - name: customer_id
@@ -39,6 +53,9 @@ models:
               arguments:
                 to: ref('dim_customers')
                 field: customer_id
+        entity:
+          type: foreign
+          name: customer
       - name: product_id
         data_tests:
           - not_null
@@ -46,12 +63,49 @@ models:
               arguments:
                 to: ref('dim_products')
                 field: product_id
+        entity:
+          type: foreign
+          name: product
       - name: order_status
         data_tests:
           - not_null
           - accepted_values:
               arguments:
                 values: ['COMPLETE', 'CANCELLED', 'RETURNED', 'PENDING']
+        dimension:
+          type: categorical
       - name: net_amount_gbp
         description: Net of VAT and refunds, GBP. Null only if FX month missing.
         data_tests: [not_null]
+      - name: order_date
+        dimension:
+          type: time
+        granularity: day
+      - name: channel
+        dimension:
+          type: categorical
+      - name: currency
+        dimension:
+          type: categorical
+      - name: customer_type
+        dimension:
+          type: categorical
+    semantic_model:
+      enabled: true
+      name: fct_sales
+    agg_time_dimension: order_date
+    metrics:
+      - name: net_revenue
+        label: Net Revenue
+        description: >
+          OFFICIAL revenue (Finance definition): net of VAT and refunds, COMPLETE
+          orders only, staff and test accounts excluded, GBP (EUR converted at
+          monthly average rate). Refunds attributed to the order month. Identical
+          by construction to the net_revenue metric in the Snowflake semantic view.
+        type: simple
+        agg: sum
+        expr: >-
+          case when order_status = 'COMPLETE'
+                and not is_test_account
+                and not is_staff_order
+               then net_amount_gbp else 0 end
